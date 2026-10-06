@@ -49,3 +49,7 @@ devpost/              规划文档：scope / prd / spec / checklist（Build With
 - 每步渲染前写 `localStorage`（key `huishan_trial_v1`）；关页重开直接从断点续播；「重玩一次」清档回首屏。
 - 选择点 seq 66 / 272 各有 3 个剧本原文选项 + 「（不答话）」沉默支；选择摘要进结算页。
 - `?seq=N` 为验收用调试跳转参数，会覆盖存档，正常分发链接不带此参数。
+
+## 部署口径
+
+线上试玩：`https://enterdrama.cn/trial/`（nginx 静态托管，配置正本在入戏主仓库 `ops/nginx-site.conf` 的 `location ^~ /trial/` 块）。部署内容 = `index.html` + `css/` + `js/` + `data/`（构建产物）+ `assets-src/fake-ads/`（index.html 运行时直接引用假广告图，部署时必须带上）。

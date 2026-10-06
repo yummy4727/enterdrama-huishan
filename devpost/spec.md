@@ -172,3 +172,9 @@ d:\explore\
 - **旁白音频与 seq 的映射规则**——`nar_0001/0003/0005` 奇数序号命名与 1190 步正本的对应关系未经逐条核对；以构建期盘点脚本对齐 `script.json` 的 audio 引用与 `narration/` 实际文件，产出 manifest + 缺口报告为验证证据。
 - **台词行配音全量缺失**（学习者确认无现成音频）→ 368 步中台词行走 TTS 管线补生成；验收 = manifest 无缺口。
 - **微信内置浏览器自动播放/解锁行为差异**——真机实测校准轻触解锁方案（PRD Open Questions 顺延）。
+
+## Sharing（6-ship 记录）
+
+- **公开仓库**：https://github.com/yummy4727/enterdrama-huishan （2026-10-06 创建，master 分支，无认证可访问已验证）
+- **线上试玩（Devpost Try-it-out 位）**：https://enterdrama.cn/trial/
+- **演示视频**：（待录制后回填 URL）
