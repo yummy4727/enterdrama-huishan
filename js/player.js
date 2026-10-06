@@ -1,4 +1,6 @@
 // 播放器引擎：按 seq 步进，分派 background / music / narration / line / prompt / branch
+import { showChoices } from './choices.js';
+
 const TYPE_SPEED = 40;   // 打字机 ms/字
 const VOICE_MAX = 4;     // 并发配音上限（点击过快时停最旧，正常节奏不触发）
 const BGM_VOL = 0.55;    // BGM 目标音量
@@ -54,8 +56,10 @@ export class Player {
       case 'line':
       case 'prompt': this.showDialog(step, true); break;
       case 'branch':
-        if (step.branches.length && step.branches[0].choices) this.showChoices(step);
-        else this.nextAuto(); // 空分支 = 自动汇合跳转
+        if (step.branches.length && step.branches[0].choices) {
+          el.dialog.classList.add('hidden'); // 选项卡组替换对话框位置
+          showChoices(el.choices, step, (goto) => this.jump(goto));
+        } else this.jump(step.default_goto_seq ?? step.seq + 1); // AUTO 分支按正本汇合点跳转
         break;
       default:
         console.warn('未知步类型', step.type, step.seq); this.nextAuto();
@@ -115,27 +119,6 @@ export class Player {
     clearInterval(this.timer);
     this._target.textContent = this._fullText;
     this.typing = true; this.typingDone = true; // 点击即跳下一句
-  }
-
-  // ---------- 选择（片 1 最小可用，片 3 精修印章样式与摘要） ----------
-  showChoices(step) {
-    const el = Player.els;
-    el.dialog.classList.add('hidden');
-    el.choices.innerHTML = '';
-    const options = [...step.branches[0].choices.map(c => ({ text: c.text, goto: c.goto_seq }))];
-    if (step.default_goto_seq) options.push({ text: '（不答话）', goto: step.default_goto_seq, silent: true });
-    for (const opt of options) {
-      const btn = document.createElement('button');
-      btn.textContent = opt.text;
-      btn.onclick = (e) => { e.stopPropagation(); this.pickChoice(opt); };
-      el.choices.appendChild(btn);
-    }
-    el.choices.classList.remove('hidden');
-  }
-
-  pickChoice(opt) {
-    Player.els.choices.classList.add('hidden');
-    this.jump(opt.goto);
   }
 
   // ---------- 配音（音频不打断，仅台词提前；并发上限兜底） ----------
