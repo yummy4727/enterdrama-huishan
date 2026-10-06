@@ -69,10 +69,11 @@ for (const key of MUSIC) {
   musicMap[key] = `data/assets/music/${key}.mp3`;
 }
 
-// 音频盘点：narration 按 audio_key 映射；line/prompt 无现成配音 → 记缺口
+// 音频盘点：narration 按 audio_key 映射；line/prompt 按 dialog/line_XXXX.mp3（片7 TTS 补生成）映射
 const manifest = {};   // seq -> "assets/audio/nar_XXXX.mp3"
 const missing = [];    // {seq, type, char, text}
 const narrationDir = path.join(ASSET_DIR, 'narration');
+const dialogDir = path.join(ASSET_DIR, 'dialog');
 for (const step of slice) {
   if (step.type === 'narration' && step.audio_key) {
     const src = path.join(narrationDir, `${step.audio_key}.mp3`);
@@ -83,7 +84,14 @@ for (const step of slice) {
       missing.push({ seq: step.seq, type: step.type, char: null, text: step.text, reason: `缺 ${step.audio_key}.mp3` });
     }
   } else if (step.type === 'line' || step.type === 'prompt') {
-    missing.push({ seq: step.seq, type: step.type, char: step.char_id, text: step.text, reason: '台词无现成配音，需 TTS 补生成' });
+    const name = `line_${String(step.seq).padStart(4, '0')}.mp3`;
+    const src = path.join(dialogDir, name);
+    if (fs.existsSync(src)) {
+      fs.copyFileSync(src, path.join(OUT_ASSETS, 'audio', name));
+      manifest[step.seq] = `data/assets/audio/${name}`;
+    } else {
+      missing.push({ seq: step.seq, type: step.type, char: step.char_id, text: step.text, reason: '台词无现成配音，需 TTS 补生成' });
+    }
   }
 }
 
@@ -111,5 +119,9 @@ console.log('== 构建完成 ==');
 console.log(`切片步数: ${slice.length}（seq 1–${SLICE_END}）`);
 console.log(`类型分布:`, JSON.stringify(types));
 console.log(`branch 步: ${branches.map(b => `${b.seq}(${b.branches.length ? 'choices' : 'AUTO'}→${b.default_goto_seq})`).join(', ')}`);
-console.log(`旁白音频覆盖: ${Object.keys(manifest).length} / ${slice.filter(s => s.type === 'narration' && s.audio_key).length}`);
+const narTotal = slice.filter(s => s.type === 'narration' && s.audio_key).length;
+const narOk = Object.values(manifest).filter(p => p.includes('/nar_')).length;
+console.log(`旁白音频覆盖: ${narOk} / ${narTotal}`);
 console.log(`待补配音: ${missing.length} 条（台词 ${missing.filter(m => m.type === 'line' || m.type === 'prompt').length} + 旁白缺口 ${missing.filter(m => m.type === 'narration').length}）`);
+const speakable = slice.filter(s => ['narration', 'line', 'prompt'].includes(s.type) && (s.type !== 'narration' || s.audio_key)).length;
+console.log(`配音覆盖率: ${Object.keys(manifest).length} / ${speakable}`);

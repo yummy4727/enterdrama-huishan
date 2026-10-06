@@ -59,7 +59,7 @@ Build mode: learn
   Learner check: 走完整旅程到结算页，看文案与跳转。
   Commit: `结算导流页与重玩`
 
-- [ ] **6. 广告占位（假素材演示）**
+- [x] **6. 广告占位（假素材演示）**
   Becomes usable: 播放全程底部假广告 banner（带"广告"角标、结算页隐藏）；结算页激励视频假卡可走完"点开→3 秒倒计时→关闭→回结算"全流程。
   Why now: 广告位结构是 scope 的 POC 边界承诺，素材与流程都为演示真实投放观感。
   PRD ref: `prd.md > 广告占位（假素材演示）`
@@ -69,7 +69,7 @@ Build mode: learn
   Learner check: 看假广告观感是否"像模像样"。
   Commit: `广告占位层与假素材`
 
-- [ ] **7. 台词配音补齐（manifest 清零）**
+- [x] **7. 台词配音补齐（manifest 清零）**
   Becomes usable: 368 步内台词行配音补生成完毕，任何一句出现即有声。
   Why now: 缺口清单已在片 1 产出，TTS 管线是学习者现成资产，放最后批量跑避免阻塞前六片验证。
   PRD ref: `prd.md > 有声播放器`
