@@ -118,7 +118,7 @@ d:\explore\
 │   ├── player.js              # 播放器引擎：步进状态机、打字机、音频/BGM/背景调度
 │   ├── choices.js             # 选择层：branch 步的选项卡组
 │   ├── endscreen.js           # 结算层：定格、文案、摘要、CTA、重玩
-│   ├── ads.js                 # 广告占位：banner + 激励视频假卡流程
+│   ├── promo.js               # 广告占位：banner + 激励视频假卡流程
 │   └── storage.js             # 进度管理：localStorage 读写/清除
 ├── scripts/build.mjs          # 构建期：裁剪/拷贝/压缩/盘点/字体子集
 ├── data/                      # 全部构建产物（.gitignore，不入仓）
@@ -126,7 +126,7 @@ d:\explore\
 │   ├── audio-manifest.json
 │   ├── audio-missing.json     # TTS 补生成投喂清单
 │   └── assets/                # audio/ bg/ portraits/（压缩后）
-├── assets-src/fake-ads/       # 假广告图源文件（自制，入仓，体积小）
+├── assets-src/fake-promo/     # 假广告图源文件（自制，入仓，体积小）
 ├── devpost/                   # 规划文档（scope/prd/spec + html，入仓）
 ├── .gitignore                 # data/ 构建产物
 └── README.md                  # 资产来源、构建命令、试玩方式（入仓）

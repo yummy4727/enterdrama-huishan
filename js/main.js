@@ -2,7 +2,7 @@
 import { Player } from './player.js';
 import { readStore, writeStore } from './storage.js';
 import { showEndscreen } from './endscreen.js';
-import { showBanner, hideBanner } from './ads.js';
+import { showBanner, hideBanner } from './promo.js';
 
 const els = {
   app: document.getElementById('app'),

@@ -257,7 +257,7 @@
     </ul></div>
   </details>
   <details>
-    <summary>广告占位层 js/ads.js<span class="prref">prd.md > 广告占位（假素材演示）</span></summary>
+    <summary>广告占位层 js/promo.js<span class="prref">prd.md > 广告占位（假素材演示）</span></summary>
     <div class="body"><ul>
       <li>底部 banner 常驻条：古风假广告图 + "广告"角标，结算页隐藏。</li>
       <li>激励视频假卡：点击 → 全屏假广告图 → 3 秒倒计时 → 关闭出现 → 返回结算页。</li>
@@ -292,7 +292,7 @@
 │   ├── player.js             <span class="c"># 播放器引擎：步进状态机、打字机、音频/BGM/背景调度</span>
 │   ├── choices.js            <span class="c"># 选择层：branch 步选项卡组</span>
 │   ├── endscreen.js          <span class="c"># 结算层：定格、文案、摘要、CTA、重玩</span>
-│   ├── ads.js                <span class="c"># 广告占位：banner + 激励视频假卡</span>
+│   ├── promo.js              <span class="c"># 广告占位：banner + 激励视频假卡（曾名 ads.js，小米浏览器广告拦截按 URL 字样秒拦，改名规避）</span>
 │   └── storage.js            <span class="c"># 进度管理：localStorage 读写/清除</span>
 ├── scripts/build.mjs         <span class="c"># 构建期：裁剪/拷贝/压缩/盘点/字体子集</span>
 ├── data/                     <span class="c"># 构建产物（.gitignore，不入仓）</span>
@@ -300,7 +300,7 @@
 │   ├── audio-manifest.json   <span class="c"># seq → mp3 映射</span>
 │   ├── audio-missing.json    <span class="c"># TTS 补生成投喂清单</span>
 │   └── assets/               <span class="c"># audio/ bg/ portraits/（压缩后）</span>
-├── assets-src/fake-ads/      <span class="c"># 自制假广告图源文件（入仓，体积小）</span>
+├── assets-src/fake-promo/    <span class="c"># 自制假广告图源文件（入仓，体积小；曾名 fake-ads，同上改名规避拦截）</span>
 ├── devpost/                  <span class="c"># scope/prd/spec + html 伴侣（入仓）</span>
 ├── .gitignore                <span class="c"># data/ 构建产物</span>
 └── README.md                 <span class="c"># 资产来源、构建命令、试玩方式（入仓）</span></pre>
@@ -371,7 +371,7 @@ const steps = [
     ["组件","player.js 识别 end:true → 交棒 endscreen.js"],
     ["表现","画面停住，定格背景压暗"]]},
   {t:"⑧ 结算页（导流）", tag:"终点 · 只有两个出口", rows:[
-    ["组件","endscreen.js + ads.js"],
+    ["组件","endscreen.js + promo.js"],
     ["表现","朱砂印「待续」+ 悬念文案 + 你的选择两行摘要"],
     ["出口 A","CTA「去入戏 App 看结局」→ 新窗口 enterdrama.cn"],
     ["出口 B","「重玩一次」→ storage.js 清进度回首屏"],

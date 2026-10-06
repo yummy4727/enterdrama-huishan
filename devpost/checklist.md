@@ -64,7 +64,7 @@ Build mode: learn
   Why now: 广告位结构是 scope 的 POC 边界承诺，素材与流程都为演示真实投放观感。
   PRD ref: `prd.md > 广告占位（假素材演示）`
   Spec ref: `spec.md > Components > 广告占位层`
-  Build: ads.js（banner 常驻/结算隐藏、假卡倒计时关闭流程）+ 自制两张古风修仙假广告素材（本地合成，入 assets-src/fake-ads）。
+  Build: promo.js（banner 常驻/结算隐藏、假卡倒计时关闭流程；曾名 ads.js，真机验收发现小米浏览器广告拦截按 URL 字样秒拦，改名规避）+ 自制两张古风修仙假广告素材（本地合成，入 assets-src/fake-promo）。
   Verify (mechanical): 浏览器自动化：播放中 banner 可见且带角标，结算页不可见；假卡点开后倒计时走 3 秒、关闭钮出现、关闭后回结算页。
   Learner check: 看假广告观感是否"像模像样"。
   Commit: `广告占位层与假素材`
@@ -94,8 +94,8 @@ Build mode: learn
 - [x] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
 - [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence: 6-ship 会话中补做。全部运行时文件（main/player/choices/endscreen/ads/storage/build.mjs、index.html、script-slice.json）本会话实读后生成导览图；配合同场技术审查（构建 368 步/配音 353/353、浏览器自动化全流程 PASS、console 零 JS 报错）作为代码即成品的一致性证据。
-Route and stops: 六站静态导览（build.mjs → data 两份 JSON → main.js → player.js → choices+endscreen → storage+ads），每站给出具体符号落点（SLICE_END/STAGE、beginFrom、jump/advance/AUTO 分支、default_goto_seq、huishan_trial_v1）。
+Activity and evidence: 6-ship 会话中补做。全部运行时文件（main/player/choices/endscreen/promo/storage/build.mjs、index.html、script-slice.json）本会话实读后生成导览图；配合同场技术审查（构建 368 步/配音 353/353、浏览器自动化全流程 PASS、console 零 JS 报错）作为代码即成品的一致性证据。
+Route and stops: 六站静态导览（build.mjs → data 两份 JSON → main.js → player.js → choices+endscreen → storage+promo），每站给出具体符号落点（SLICE_END/STAGE、beginFrom、jump/advance/AUTO 分支、default_goto_seq、huishan_trial_v1）。
 Edit outcome: not applicable — 未提出代码修改，仅生成导览产物。
 Reflection: 已通过导览图「值得带走复用的实践」表提供 5 条可迁移实践（手势内解锁音频、暂存原子换入、缺口清单驱动、静默降级、?seq 调试跳转）；个人化反思归 learner-profile（gitignore，不入仓）。
 Activity mode: focused alternative — 成品代码静态导览（构建已完成，不再动编辑器）。

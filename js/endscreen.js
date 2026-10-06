@@ -1,6 +1,6 @@
 // 结算层：定格压暗、待续印、悬念文案、你的选择摘要、官网 CTA、重玩
 import { readStore, clearStore } from './storage.js';
-import { mountRewardedCard } from './ads.js';
+import { mountRewardedCard } from './promo.js';
 
 const CTA_URL = 'https://www.enterdrama.cn/';
 const SHARE_TITLE = '入戏·回山试玩｜天亮之前，他得选';

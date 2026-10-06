@@ -1,4 +1,4 @@
-// 本地合成两张古风修仙假广告素材（自制占位，非真实广告网络）→ assets-src/fake-ads/
+// 本地合成两张古风修仙假广告素材（自制占位，非真实广告网络）→ assets-src/fake-promo/
 // 用法：node scripts/make-fake-ads.mjs
 // 设计：banner（横条，玩法引流）+ rewarded（竖屏全屏，结算页激励视频位）
 import sharp from 'sharp';
@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ASSET = 'D:/恋爱剧本交友/剧本/回山/回山-资产';
-const OUT = path.join(ROOT, 'assets-src', 'fake-ads');
+const OUT = path.join(ROOT, 'assets-src', 'fake-promo');
 fs.mkdirSync(OUT, { recursive: true });
 
 const PAPER = '#f6f1e5', GOLD = '#d9bc7f', CINNABAR = '#a83c2e', INK = 'rgba(28,24,19,';
@@ -86,4 +86,4 @@ const FONT = 'SimSun, Microsoft YaHei, serif'; // SVG 属性内不能带双引�
     .toFile(path.join(OUT, 'rewarded.jpg'));
 }
 
-console.log('已生成 assets-src/fake-ads/banner.jpg 与 rewarded.jpg');
+console.log('已生成 assets-src/fake-promo/banner.jpg 与 rewarded.jpg');
