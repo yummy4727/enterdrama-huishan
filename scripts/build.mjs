@@ -14,15 +14,7 @@ const OUT_ASSETS = path.join(OUT_DATA, 'assets');
 const SLICE_END = 368;
 // 切片内用到的资产 key
 const BACKGROUNDS = ['bg_shop_dusk', 'bg_shop_night', 'bg_store_night', 'bg_courtyard_night'];
-const MUSIC = ['bgm_daily', 'bgm_departure', 'bgm_night', 'bgm_uneasy'];
-
-// TTS 读感修正（学习者批准的零改动例外，仅构建期生效，正本不动）：
-// 旁白句首裸「人名：台词」念出来像报台词，补「说」字。审计 46 处：老周 15 + 韩策 31。
-const TTS_READ_FIX = [
-  [/^老周：/, '老周说：'],
-  [/^韩策：/, '韩策说：'],
-];
-const fixNarrationText = (t) => TTS_READ_FIX.reduce((s, [re, rep]) => s.replace(re, rep), t);
+const MUSIC = ['bgm_daily', 'bgm_uneasy', 'bgm_night', 'bgm_departure'];
 
 // ---------- 图片压缩（sharp 可用则压 WebP，否则拷原图） ----------
 let sharp = null;
@@ -40,12 +32,12 @@ const full = JSON.parse(fs.readFileSync(SCRIPT_JSON, 'utf8'));
 const def = JSON.parse(fs.readFileSync(path.join(SRC_DIR, '回山-script_json/definition.json'), 'utf8'));
 const bySeq = new Map(full.steps.map(s => [s.seq, s]));
 
-// 裁剪切片（旁白文本经 TTS 读感修正，其余零改动）
+// 裁剪切片（文本零改动：NPC 读感修正已在正本管线完成）
 const slice = [];
 for (let seq = 1; seq <= SLICE_END; seq++) {
   const step = bySeq.get(seq);
   if (!step) throw new Error(`正本缺 seq ${seq}，裁剪中止`);
-  slice.push(step.type === 'narration' ? { ...step, text: fixNarrationText(step.text || '') } : step);
+  slice.push(step);
 }
 slice[slice.length - 1].end = true; // seq 368 定格标记
 
@@ -78,15 +70,12 @@ for (const key of MUSIC) {
 }
 
 // 音频盘点：narration 按 audio_key 映射；line/prompt 无现成配音 → 记缺口
-// 重生成旁白优先取 assets-src/audio-overrides/（TTS 读感修正版），否则用正本旁白
 const manifest = {};   // seq -> "assets/audio/nar_XXXX.mp3"
 const missing = [];    // {seq, type, char, text}
 const narrationDir = path.join(ASSET_DIR, 'narration');
-const audioOverrideDir = path.join(ROOT, 'assets-src', 'audio-overrides');
 for (const step of slice) {
   if (step.type === 'narration' && step.audio_key) {
-    const override = path.join(audioOverrideDir, `${step.audio_key}.mp3`);
-    const src = fs.existsSync(override) ? override : path.join(narrationDir, `${step.audio_key}.mp3`);
+    const src = path.join(narrationDir, `${step.audio_key}.mp3`);
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, path.join(OUT_ASSETS, 'audio', `${step.audio_key}.mp3`));
       manifest[step.seq] = `data/assets/audio/${step.audio_key}.mp3`;
