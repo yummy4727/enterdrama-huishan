@@ -104,9 +104,9 @@ export class Player {
       el.charName.textContent = ch.name || '';
     } else {
       el.avatarWrap.classList.add('hidden');
-      el.charName.textContent = '';
+      el.charName.textContent = step.speaker || ''; // NPC 旁白：显示说话人签（音频已剥「XX说」前缀）
     }
-    this.typewrite(el.charText, step.text || '');
+    this.typewrite(el.charText, step.speech || step.text || '');
   }
 
   // ---------- 头像 ----------
