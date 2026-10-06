@@ -103,6 +103,7 @@ body{
   position:absolute;left:0;right:0;bottom:0;z-index:26;height:44px;
   background:#141210;border-top:1px solid rgba(201,169,106,.35);
 }
+#adBanner a,#adInterstitial a{display:block;height:100%;cursor:pointer}
 #adBanner img{width:100%;height:100%;object-fit:cover;display:block}
 /* banner 抬高对话/选择层，避免压住 */
 #app.ad-on #dialog,#app.ad-on #choices{bottom:56px}

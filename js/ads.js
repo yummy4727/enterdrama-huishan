@@ -12,6 +12,11 @@ export function hideBanner() {
   document.getElementById('app').classList.remove('ad-on');
 }
 
+// 广告素材可点：跳入戏官网（原生 <a> 新窗口，微信内置浏览器兼容最佳）；挡冒泡防推进剧情
+for (const a of document.querySelectorAll('#adBanner a, #adInterstitial a')) {
+  a.addEventListener('click', (e) => e.stopPropagation());
+}
+
 // 结算页挂激励视频假卡；点击走「点开 → 3 秒倒计时 → 关闭钮出现 → 关闭回结算」全流程
 export function mountRewardedCard(slot) {
   slot.innerHTML = `
@@ -43,5 +48,5 @@ function playInterstitial() {
     count.classList.add('hidden');
     close.classList.remove('hidden'); // 倒计时走完才出现关闭钮
   }, 1000);
-  close.onclick = () => { clearInterval(timer); box.classList.add('hidden'); }; // 关闭 → 回结算页
+  close.onclick = (e) => { e.stopPropagation(); clearInterval(timer); box.classList.add('hidden'); }; // 关闭 → 回结算页
 }
