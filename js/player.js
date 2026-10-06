@@ -150,8 +150,11 @@ export class Player {
     this.voices = [];
   }
 
-  // 回首页：停全部声音与自动播放；保留 bgmKey 供续播恢复
+  // 回首页：停打字机/配音/BGM/自动推进，防止剧情在首页遮罩下偷跑；保留 bgmKey 供续播恢复
   stopAll() {
+    clearInterval(this.timer); // 打字机不停会把断点偷偷推进（隐藏 dialog 里继续打完→自动跳句）
+    this.typing = true; this.typingDone = true;
+    this.autoVoiceDone = false; // 双保险：maybeAuto 链路彻底断开
     this.stopVoices();
     clearTimeout(this.autoTimer);
     if (this.bgm) { this.bgm.pause(); this.bgm.removeAttribute('src'); this.bgm.load(); this.bgm = null; }

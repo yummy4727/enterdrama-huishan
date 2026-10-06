@@ -55,9 +55,11 @@ const beginFrom = (seq) => {
   player.resumeBgm(); // 回首页续播时恢复被停掉的 BGM（在手势内起播）
 };
 
-// 回到首页：停声、保留进度、印章改「继续剧情」；再点印章从当前断点续播
+// 回到首页：停声与自动播放、保留进度、印章改「继续剧情」；再点印章从当前断点续播
 const goHome = () => {
   player.stopAll();
+  player.auto = false; // 回首页即暂停：自动播放不跨首页存活，杜绝遮罩下偷跑
+  els.btnAuto.classList.remove('on');
   started = false;
   els.playControls.classList.add('hidden');
   els.dialog.classList.add('hidden');
@@ -65,8 +67,9 @@ const goHome = () => {
   document.querySelector('.tap-seal span:last-child').textContent = '继续剧情';
   els.tapGate.classList.remove('hidden');
 };
-els.btnAuto.onclick = () => els.btnAuto.classList.toggle('on', player.toggleAuto());
-els.btnHome.onclick = goHome;
+// stopPropagation：按钮点击不得冒泡到全局 advance（否则点一次按钮剧情跳一句）
+els.btnAuto.onclick = (e) => { e.stopPropagation(); els.btnAuto.classList.toggle('on', player.toggleAuto()); };
+els.btnHome.onclick = (e) => { e.stopPropagation(); goHome(); };
 
 // ?seq=N 调试跳转（仅验收用）：跳过轻触直接落到指定步（无声）
 const debugSeq = Number(new URLSearchParams(location.search).get('seq'));
@@ -88,6 +91,7 @@ if (debugSeq && player.bySeq.has(debugSeq)) {
 // 全局点击 = 补全当前句 / 跳下一句（选择按钮自带 stopPropagation）
 document.getElementById('app').addEventListener('click', (e) => {
   if (!started) return;
+  if (e.target.closest('#tapGate')) return; // 轻触首屏的点击只用于开始/续播，不冒泡推进剧情
   if (!els.choices.classList.contains('hidden')) return;
   player.advance();
 });
