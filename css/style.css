@@ -41,6 +41,22 @@ body{
 }
 .tap-seal span+span{font-size:15px;letter-spacing:.28em;color:var(--ink2);font-weight:400}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+/* ---------- 播放控制条：自动播放 / 回到首页 ---------- */
+#playControls{
+  position:absolute;top:12px;right:12px;z-index:22;
+  display:flex;gap:8px;
+}
+#playControls button{
+  font-family:inherit;font-size:12.5px;letter-spacing:.08em;cursor:pointer;
+  color:var(--paper);background:rgba(28,24,19,.5);
+  border:1px solid rgba(201,169,106,.55);border-radius:2px;
+  padding:6px 10px;
+}
+#playControls button:active{transform:scale(.96)}
+#btnAuto.on{ /* 自动播放开启态：朱砂点亮 */
+  background:var(--cinnabar);border-color:var(--cinnabar-dk);
+  box-shadow:0 0 0 1px rgba(246,241,229,.25) inset;
+}
 /* ---------- 对话层 ---------- */
 #dialog{
   position:absolute;left:10px;right:10px;bottom:18px;z-index:20;cursor:pointer;

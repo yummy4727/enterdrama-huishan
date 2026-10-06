@@ -17,6 +17,9 @@ const els = {
   charText: document.getElementById('charText'),
   clickHint: document.getElementById('clickHint'),
   choices: document.getElementById('choices'),
+  playControls: document.getElementById('playControls'),
+  btnAuto: document.getElementById('btnAuto'),
+  btnHome: document.getElementById('btnHome'),
   endscreen: document.getElementById('endscreen'),
   endChoice1: document.getElementById('endChoice1'),
   endChoice2: document.getElementById('endChoice2'),
@@ -45,10 +48,25 @@ const beginFrom = (seq) => {
   if (started) return;
   started = true;
   els.tapGate.classList.add('hidden');
+  els.playControls.classList.remove('hidden');
   showBanner(); // 底部假广告 banner：播放全程常驻（结算页隐藏）
   // start() 链在本次点击手势内同步执行：BGM 与首句配音的首次 play() 均在手势中，完成音频解锁
   player.start(seq);
+  player.resumeBgm(); // 回首页续播时恢复被停掉的 BGM（在手势内起播）
 };
+
+// 回到首页：停声、保留进度、印章改「继续剧情」；再点印章从当前断点续播
+const goHome = () => {
+  player.stopAll();
+  started = false;
+  els.playControls.classList.add('hidden');
+  els.dialog.classList.add('hidden');
+  els.choices.classList.add('hidden');
+  document.querySelector('.tap-seal span:last-child').textContent = '继续剧情';
+  els.tapGate.classList.remove('hidden');
+};
+els.btnAuto.onclick = () => els.btnAuto.classList.toggle('on', player.toggleAuto());
+els.btnHome.onclick = goHome;
 
 // ?seq=N 调试跳转（仅验收用）：跳过轻触直接落到指定步（无声）
 const debugSeq = Number(new URLSearchParams(location.search).get('seq'));
@@ -62,10 +80,9 @@ if (debugSeq && player.bySeq.has(debugSeq)) {
   const saved = readStore();
   if (saved.seq && player.bySeq.has(saved.seq)) {
     document.querySelector('.tap-seal span:last-child').textContent = '继续剧情';
-    els.tapGate.addEventListener('click', () => beginFrom(saved.seq));
-  } else {
-    els.tapGate.addEventListener('click', () => beginFrom());
   }
+  // 统一动态读存档：回首页后再点印章，从「当前」断点续播而非加载时的旧位置
+  els.tapGate.addEventListener('click', () => beginFrom(readStore().seq));
 }
 
 // 全局点击 = 补全当前句 / 跳下一句（选择按钮自带 stopPropagation）

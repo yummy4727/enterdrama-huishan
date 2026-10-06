@@ -21,6 +21,9 @@ export class Player {
     this.voices = [];   // 在播配音池
     this.bgm = null;    // 当前 BGM Audio
     this.bgmKey = null;
+    this.auto = false;        // 自动播放：当前句（配音+打字机）结束后自动进下一句
+    this.autoVoiceDone = true; // 当前句配音是否已播完（无配音句恒 true）
+    this.autoTimer = null;
   }
 
   // ---------- DOM ----------
@@ -34,7 +37,9 @@ export class Player {
   jump(seq) {
     const step = this.bySeq.get(seq);
     if (!step) return console.warn('jump 无此 seq:', seq);
+    clearTimeout(this.autoTimer);
     this.stopVoices(); // 跳句即停上一句配音，避免混声（BGM 不受影响）
+    this.autoVoiceDone = !this.manifest[seq]; // 有配音句等 ended，无配音句视为已完
     this.current = step;
     this.render(step);
   }
@@ -121,7 +126,22 @@ export class Player {
     clearInterval(this.timer);
     this._target.textContent = this._fullText;
     this.typing = true; this.typingDone = true; // 点击即跳下一句
+    this.maybeAuto(); // 自动播放：打字机与配音取更晚结束者
     if (this.current.end) setTimeout(() => this.onEnd(), 1400); // 最后一句定格片刻 → 结算页
+  }
+
+  // ---------- 自动播放 ----------
+  toggleAuto() {
+    this.auto = !this.auto;
+    if (this.auto) this.maybeAuto(); // 开关打开瞬间当前句可能早已播完
+    return this.auto;
+  }
+
+  maybeAuto() {
+    if (!this.auto || !this.typingDone || !this.autoVoiceDone) return;
+    clearTimeout(this.autoTimer);
+    this.autoTimer = setTimeout(() => { if (this.auto) this.advance(); }, 500); // 句间稍作停顿
+    // branch 步 advance 直接 return：真分岔永远等玩家选
   }
 
   // ---------- 配音（跳句停上一句防混声；并发上限兜底） ----------
@@ -130,13 +150,31 @@ export class Player {
     this.voices = [];
   }
 
+  // 回首页：停全部声音与自动播放；保留 bgmKey 供续播恢复
+  stopAll() {
+    this.stopVoices();
+    clearTimeout(this.autoTimer);
+    if (this.bgm) { this.bgm.pause(); this.bgm.removeAttribute('src'); this.bgm.load(); this.bgm = null; }
+  }
+
+  // 续播恢复 BGM（须在点击手势内调用以过自动播放策略）
+  resumeBgm() {
+    if (!this.bgmKey) return;
+    const key = this.bgmKey;
+    this.bgmKey = null;
+    this.setMusic(key);
+  }
+
   playVoice(seq) {
     const src = this.manifest[seq];
     if (!src) return; // 无配音：静默降级，绝不阻塞
+    this.autoVoiceDone = false;
     const audio = new Audio(src);
     this.voices.push(audio);
     audio.addEventListener('ended', () => {
       this.voices = this.voices.filter(v => v !== audio);
+      this.autoVoiceDone = true;
+      this.maybeAuto(); // 自动播放：配音播完（打字机若也完）→ 进下一句
     });
     // 超过并发上限：停最旧（仅在快速连点时发生）
     while (this.voices.length > VOICE_MAX) {
