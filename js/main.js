@@ -43,6 +43,17 @@ const player = new Player(data, {
 els.bgA.src = data.meta.default_background;
 els.bgA.onload = () => els.bgA.classList.add('show');
 
+// 预载头像（防裂图）：首句台词才发头像请求的话，若撞上构建换装窗口会 404；
+// 启动期就暖缓存，失败带退避重试（重试期无 UI 暴露）
+function warmPortrait(url, tries = 3) {
+  const probe = new Image();
+  probe.onerror = () => { if (tries > 1) setTimeout(() => warmPortrait(url, tries - 1), 800); };
+  probe.src = url;
+}
+for (const ch of Object.values(data.meta.characters || {})) {
+  if (ch.avatar) warmPortrait(ch.avatar);
+}
+
 let started = false;
 const beginFrom = (seq) => {
   if (started) return;
@@ -76,6 +87,7 @@ const debugSeq = Number(new URLSearchParams(location.search).get('seq'));
 if (debugSeq && player.bySeq.has(debugSeq)) {
   started = true;
   els.tapGate.classList.add('hidden');
+  els.playControls.classList.remove('hidden'); // 调试跳转同样亮出控制条（否则 ?seq= 重开看不到按钮）
   showBanner();
   player.start(debugSeq);
 } else {

@@ -10,6 +10,7 @@ const SCRIPT_JSON = path.join(SRC_DIR, '回山-script_json/script.json');
 const ASSET_DIR = path.join(SRC_DIR, '回山-资产');
 const OUT_DATA = path.join(ROOT, 'data');
 const OUT_ASSETS = path.join(OUT_DATA, 'assets');
+const STAGE = path.join(OUT_DATA, '.assets-staging'); // 先写暂存目录，末尾一次性换入正式目录：构建中途页面请求不再撞 404（头像裂图根因）
 
 const SLICE_END = 368;
 // 切片内用到的资产 key
@@ -20,11 +21,13 @@ const MUSIC = ['bgm_daily', 'bgm_uneasy', 'bgm_night', 'bgm_departure'];
 let sharp = null;
 try { sharp = (await import('sharp')).default; } catch { console.warn('⚠ sharp 未安装，图片将拷原图（npm i -D sharp 后重跑可压缩）'); }
 
+const toAssetUrl = (p) => 'data/assets/' + path.relative(STAGE, p).replaceAll('\\', '/'); // 页面根相对路径（暂存目录换入 assets 后依然成立）
+
 async function compressImage(src, destBase) {
-  if (!sharp) { fs.copyFileSync(src, destBase + path.extname(src)); return 'data/' + path.relative(OUT_DATA, destBase + path.extname(src)).replaceAll('\\', '/'); }
+  if (!sharp) { const dest = destBase + path.extname(src); fs.copyFileSync(src, dest); return toAssetUrl(dest); }
   const dest = destBase + '.webp';
   await sharp(src).resize({ width: 1080, withoutEnlargement: true }).webp({ quality: 78 }).toFile(dest);
-  return 'data/' + path.relative(OUT_DATA, dest).replaceAll('\\', '/'); // 页面根相对路径
+  return toAssetUrl(dest);
 }
 
 // ---------- 主流程 ----------
@@ -41,14 +44,14 @@ for (let seq = 1; seq <= SLICE_END; seq++) {
 }
 slice[slice.length - 1].end = true; // seq 368 定格标记
 
-fs.rmSync(OUT_ASSETS, { recursive: true, force: true });
-fs.mkdirSync(OUT_ASSETS, { recursive: true });
-for (const d of ['audio', 'bg', 'portraits', 'music']) fs.mkdirSync(path.join(OUT_ASSETS, d), { recursive: true });
+fs.rmSync(STAGE, { recursive: true, force: true });
+fs.mkdirSync(STAGE, { recursive: true });
+for (const d of ['audio', 'bg', 'portraits', 'music']) fs.mkdirSync(path.join(STAGE, d), { recursive: true });
 
 // 背景（压缩 WebP）
 const bgMap = {};
 for (const key of BACKGROUNDS) {
-  bgMap[key] = await compressImage(path.join(ASSET_DIR, `${key}.png`), path.join(OUT_ASSETS, 'bg', key));
+  bgMap[key] = await compressImage(path.join(ASSET_DIR, `${key}.png`), path.join(STAGE, 'bg', key));
 }
 // 头像（压缩 WebP）：优先用 assets-src/portraits 重绘版，否则回退正本立绘
 const OVERRIDE_DIR = path.join(ROOT, 'assets-src', 'portraits');
@@ -60,12 +63,12 @@ for (const c of def.characters) {
     .map(ext => path.join(OVERRIDE_DIR, `${base}.${ext}`))
     .find(p => fs.existsSync(p));
   const src = override || path.join(ASSET_DIR, name);
-  portraits[c.char_id] = await compressImage(src, path.join(OUT_ASSETS, 'portraits', base));
+  portraits[c.char_id] = await compressImage(src, path.join(STAGE, 'portraits', base));
 }
 // BGM（全拷）
 const musicMap = {};
 for (const key of MUSIC) {
-  fs.copyFileSync(path.join(ASSET_DIR, `${key}.mp3`), path.join(OUT_ASSETS, 'music', `${key}.mp3`));
+  fs.copyFileSync(path.join(ASSET_DIR, `${key}.mp3`), path.join(STAGE, 'music', `${key}.mp3`));
   musicMap[key] = `data/assets/music/${key}.mp3`;
 }
 
@@ -78,7 +81,7 @@ for (const step of slice) {
   if (step.type === 'narration' && step.audio_key) {
     const src = path.join(narrationDir, `${step.audio_key}.mp3`);
     if (fs.existsSync(src)) {
-      fs.copyFileSync(src, path.join(OUT_ASSETS, 'audio', `${step.audio_key}.mp3`));
+      fs.copyFileSync(src, path.join(STAGE, 'audio', `${step.audio_key}.mp3`));
       manifest[step.seq] = `data/assets/audio/${step.audio_key}.mp3`;
     } else {
       missing.push({ seq: step.seq, type: step.type, char: null, text: step.text, reason: `缺 ${step.audio_key}.mp3` });
@@ -87,7 +90,7 @@ for (const step of slice) {
     const name = `line_${String(step.seq).padStart(4, '0')}.mp3`;
     const src = path.join(dialogDir, name);
     if (fs.existsSync(src)) {
-      fs.copyFileSync(src, path.join(OUT_ASSETS, 'audio', name));
+      fs.copyFileSync(src, path.join(STAGE, 'audio', name));
       manifest[step.seq] = `data/assets/audio/${name}`;
     } else {
       missing.push({ seq: step.seq, type: step.type, char: step.char_id, text: step.text, reason: '台词无现成配音，需 TTS 补生成' });
@@ -106,6 +109,19 @@ const sliceData = {
   },
   steps: slice,
 };
+
+// 换入正式目录：暂存 → 正式（同卷 rename 近乎原子，404 空窗从秒级缩到毫秒级）
+// Windows 下若旧目录还有未读完的句柄（页面请求在途），删除会 EBUSY/EPERM → 短暂重试
+for (let i = 0; ; i++) {
+  try {
+    fs.rmSync(OUT_ASSETS, { recursive: true, force: true });
+    fs.renameSync(STAGE, OUT_ASSETS);
+    break;
+  } catch (err) {
+    if (i >= 4) throw err;
+    await new Promise(r => setTimeout(r, 200));
+  }
+}
 
 fs.writeFileSync(path.join(OUT_DATA, 'script-slice.json'), JSON.stringify(sliceData, null, 1));
 fs.writeFileSync(path.join(OUT_DATA, 'audio-manifest.json'), JSON.stringify(manifest, null, 1));

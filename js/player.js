@@ -100,13 +100,29 @@ export class Player {
     if (withChar) {
       const ch = this.meta.characters[step.char_id] || {};
       el.avatarWrap.classList.remove('hidden');
-      el.avatar.src = ch.avatar || '';
+      this.setAvatar(ch.avatar);
       el.charName.textContent = ch.name || '';
     } else {
       el.avatarWrap.classList.add('hidden');
       el.charName.textContent = '';
     }
     this.typewrite(el.charText, step.text || '');
+  }
+
+  // ---------- 头像 ----------
+  // 请求失败自愈：先带 cache-bust 重试一次，仍失败则收起头像圈（绝不显示裂图）
+  // 根因背景：构建期 rmSync 换装窗口内首次头像请求会 404；同值重赋 src 在部分时机不会重新发起请求
+  setAvatar(src) {
+    const el = Player.els;
+    if (!src) { el.avatarWrap.classList.add('hidden'); return; }
+    el.avatar.onload = () => { delete el.avatar.dataset.retry; };
+    el.avatar.onerror = () => {
+      if (el.avatar.dataset.retry) { el.avatar.onerror = null; el.avatarWrap.classList.add('hidden'); return; }
+      el.avatar.dataset.retry = '1';
+      el.avatar.src = `${src}?r=${Date.now()}`;
+    };
+    delete el.avatar.dataset.retry;
+    el.avatar.src = src;
   }
 
   typewrite(target, text) {
