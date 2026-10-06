@@ -1,0 +1,22 @@
+# Devpost Learn: personal learning context stays out of commits
+/devpost/learner-profile.md
+
+# Local credential files (a secret-free .env.example is allowed)
+.env
+.env.*
+!.env.example
+
+# Build artifacts (generated from local 回山 assets, not committed)
+/data/
+node_modules/
+
+# Avatar iteration candidates & reference photos (not for public repo); keep finals only
+assets-src/portraits/*
+!assets-src/portraits/江明.png
+!assets-src/portraits/陈惠卿.png
+
+# Devpost Learn skill pack course material
+.agents/
+.claude/
+agent/
+skills-lock.json

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>回山试玩版 · PRD 评审</title>
+<style>
+  :root{
+    --paper:#f6f1e5; --card:#fffdf7; --ink:#2c2822; --ink2:#5c554a;
+    --cinnabar:#a83c2e; --cinnabar-dk:#8c2f24; --gold:#c9a96a; --line:#e2d9c6;
+    --ok:#4a7c59;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Noto Serif SC","Source Han Serif SC","STSong","SimSun",serif;
+    line-height:1.75; padding:0 0 80px;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px}
+  header{
+    padding:56px 0 28px; border-bottom:3px double var(--gold); margin-bottom:32px;
+    position:relative;
+  }
+  .chip{
+    display:inline-block; font-size:13px; letter-spacing:.2em; padding:3px 14px;
+    border:1px solid var(--cinnabar); color:var(--cinnabar); border-radius:2px; margin-bottom:14px;
+  }
+  h1{font-size:34px; letter-spacing:.06em; font-weight:700}
+  .oneline{margin-top:12px; color:var(--ink2); font-size:15.5px; max-width:720px}
+  .oneline b{color:var(--cinnabar)}
+  h2{
+    font-size:22px; letter-spacing:.1em; margin:52px 0 8px; display:flex; align-items:center; gap:12px;
+  }
+  h2::before{content:""; width:10px; height:10px; background:var(--cinnabar); transform:rotate(45deg); flex:none}
+  .sub{color:var(--ink2); font-size:14px; margin-bottom:18px}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:6px;
+    padding:22px 24px; box-shadow:0 1px 0 rgba(44,40,34,.04);
+  }
+  /* ---------- journey diagram ---------- */
+  .diagram{overflow-x:auto; padding:6px 0}
+  .diagram svg{display:block; min-width:340px; margin:0 auto}
+  /* ---------- stepper ---------- */
+  .steps-nav{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:16px 0 14px}
+  .steps-nav button{
+    font-family:inherit; font-size:14px; letter-spacing:.1em; cursor:pointer;
+    background:var(--card); color:var(--ink); border:1px solid var(--gold);
+    padding:6px 18px; border-radius:2px;
+  }
+  .steps-nav button:hover{background:var(--cinnabar); color:#fff; border-color:var(--cinnabar)}
+  .dots{display:flex; gap:7px; flex:1; justify-content:center}
+  .dots span{
+    width:11px; height:11px; border-radius:50%; border:1px solid var(--gold);
+    cursor:pointer; transition:.2s;
+  }
+  .dots span.on{background:var(--cinnabar); border-color:var(--cinnabar); transform:scale(1.15)}
+  .step-card h3{font-size:19px; letter-spacing:.08em; color:var(--cinnabar-dk); margin-bottom:4px}
+  .step-card .tag{font-size:12.5px; color:var(--ink2); letter-spacing:.15em; margin-bottom:14px}
+  .step-card .row{display:flex; gap:10px; margin:9px 0; font-size:14.5px}
+  .step-card .k{
+    flex:none; width:64px; text-align:center; font-size:12.5px; letter-spacing:.2em;
+    color:#fff; background:var(--ink2); border-radius:2px; padding:2px 0; height:fit-content; margin-top:3px;
+  }
+  .step-card .k.gold{background:var(--cinnabar)}
+  .step-card .k.ok{background:var(--ok)}
+  /* ---------- accordions ---------- */
+  details{border:1px solid var(--line); border-radius:6px; background:var(--card); margin-bottom:10px}
+  summary{
+    cursor:pointer; padding:14px 20px; font-size:16.5px; letter-spacing:.08em; font-weight:700;
+    list-style:none; display:flex; align-items:center; gap:10px;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"❧"; color:var(--gold); font-size:15px}
+  details[open] summary{border-bottom:1px dashed var(--line); color:var(--cinnabar-dk)}
+  details .body{padding:16px 22px 20px; font-size:14.5px; color:var(--ink)}
+  details .body ul{padding-left:1.3em}
+  details .body li{margin:6px 0}
+  /* ---------- checklist ---------- */
+  .check{list-style:none; padding-left:0 !important}
+  .check li{padding-left:26px; position:relative}
+  .check li::before{
+    content:"✓"; position:absolute; left:0; top:0; color:var(--ok); font-weight:700;
+  }
+  /* ---------- table ---------- */
+  table{width:100%; border-collapse:collapse; background:var(--card); font-size:14px}
+  th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top}
+  th{background:#efe8d8; letter-spacing:.08em; font-size:13.5px; white-space:nowrap}
+  td b{color:var(--cinnabar-dk)}
+  /* ---------- palette ---------- */
+  .pal{display:flex; gap:12px; flex-wrap:wrap; margin:10px 0 16px}
+  .pal .sw{width:104px}
+  .pal .sw i{display:block; height:52px; border-radius:4px; border:1px solid rgba(0,0,0,.08)}
+  .pal .sw em{font-style:normal; font-size:12px; color:var(--ink2); display:block; text-align:center; margin-top:5px}
+  /* dialog mock */
+  .mock{
+    margin-top:14px; border-radius:6px; overflow:hidden; position:relative; height:300px;
+    background:linear-gradient(180deg,#3a3128,#241f19); display:flex; flex-direction:column; justify-content:flex-end;
+  }
+  .mock .scene{position:absolute; inset:0; opacity:.5; background:
+    radial-gradient(circle at 70% 30%, #6b5a3f 0%, transparent 55%),
+    linear-gradient(180deg,#4a3d2c,#221c15)}
+  .mock .dialog{
+    position:relative; margin:0 12px 12px; background:rgba(248,243,230,.94);
+    border:1px solid var(--gold); border-radius:4px; padding:12px 16px 14px; box-shadow:0 2px 10px rgba(0,0,0,.4);
+  }
+  .mock .who{font-size:13px; letter-spacing:.2em; color:var(--cinnabar-dk); margin-bottom:3px; font-weight:700}
+  .mock .txt{font-size:14.5px}
+  .mock .avatar{
+    position:absolute; left:14px; top:-26px; width:52px; height:52px; border-radius:50%;
+    border:2px solid var(--gold); background:#7a6a4f; display:flex; align-items:center; justify-content:center;
+    color:#f6f1e5; font-size:20px;
+  }
+  .mock .choices{position:relative; margin:0 12px 12px; display:flex; flex-direction:column; gap:8px}
+  .mock .btn{
+    background:linear-gradient(180deg,#b54634,#8c2f24); color:#f8f3e6; border:1px solid #d9a05a;
+    border-radius:3px; padding:9px 14px; font-size:14px; letter-spacing:.1em; text-align:center;
+    box-shadow:0 2px 5px rgba(0,0,0,.35);
+  }
+  .mock .btn.mute{background:#5c5346; font-size:13px}
+  .mock .banner{
+    position:relative; margin:0 12px 12px; height:34px; border:1px dashed #c9b98f;
+    display:flex; align-items:center; justify-content:center; color:#d8c9a5; font-size:11.5px; letter-spacing:.25em;
+  }
+  /* decisions */
+  .dec{border-left:3px solid var(--gold); padding:8px 0 8px 18px; margin:12px 0}
+  .dec b{color:var(--cinnabar-dk)}
+  .dec .why{color:var(--ink2); font-size:13.5px}
+  .cols{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media (max-width:640px){.cols{grid-template-columns:1fr}}
+  footer{margin-top:60px; text-align:center; color:var(--ink2); font-size:13px; letter-spacing:.15em}
+  footer .seal{
+    display:inline-block; border:2px solid var(--cinnabar); color:var(--cinnabar);
+    padding:6px 14px; border-radius:3px; letter-spacing:.4em; font-weight:700; margin-bottom:10px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="chip">PRD · 已批准</span>
+  <h1>回山试玩版 · 产品定义</h1>
+  <p class="oneline">把入戏正式剧本《回山》的第一、二幕<b>原样裁成</b> seq 1–368 的有声互动试玩，玩到"涂药定格"处切断，把人导去官网——一份<b>能玩的买量广告</b>。<br>Scope 说"分支真实改变后续文本"；现在钉死了是哪两处选择（seq 66 / 272）、选项原文是什么、切在哪一句。</p>
+</header>
+
+<h2>核心旅程</h2>
+<p class="sub">一条主线 + 两次分支 + 一个切断。朱砂为玩家参与点。</p>
+<div class="card diagram">
+<svg viewBox="0 0 640 760" width="640" height="760" xmlns="http://www.w3.org/2000/svg" font-family="'Noto Serif SC','SimSun',serif">
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L7,4 L0,8 Z" fill="#c9a96a"/>
+    </marker>
+  </defs>
+  <!-- spine -->
+  <line x1="80" y1="52" x2="80" y2="708" stroke="#c9a96a" stroke-width="2" marker-end="url(#ar)"/>
+  <!-- node template: circle + right box -->
+  <!-- 1 -->
+  <circle cx="80" cy="40" r="13" fill="#2c2822"/>
+  <text x="80" y="45" text-anchor="middle" fill="#f6f1e5" font-size="12">1</text>
+  <rect x="118" y="16" width="490" height="50" rx="5" fill="#fffdf7" stroke="#e2d9c6"/>
+  <text x="136" y="37" font-size="15" fill="#2c2822" font-weight="bold">点开链接 → 轻触首屏</text>
+  <text x="136" y="56" font-size="12.5" fill="#5c554a">第一幕背景铺满全屏 + 居中"轻触 开启剧情"印（音频解锁，唯一一次点击门槛）</text>
+  <!-- 2 -->
+  <circle cx="80" cy="120" r="13" fill="#2c2822"/>
+  <text x="80" y="125" text-anchor="middle" fill="#f6f1e5" font-size="12">2</text>
+  <rect x="118" y="88" width="490" height="64" rx="5" fill="#fffdf7" stroke="#e2d9c6"/>
+  <text x="136" y="110" font-size="15" fill="#2c2822" font-weight="bold">第一幕 · 照常开门（seq 1–65）</text>
+  <text x="136" y="129" font-size="12.5" fill="#5c554a">bg_shop_dusk→bg_shop_night ｜ bgm_daily ｜ 修门槛·抓药·喜酒·分饭</text>
+  <text x="136" y="145" font-size="12.5" fill="#5c554a">约 64 步日常原样保留，配音 + 打字机逐字</text>
+  <!-- 3 choice -->
+  <circle cx="80" cy="212" r="13" fill="#a83c2e"/>
+  <text x="80" y="217" text-anchor="middle" fill="#f6f1e5" font-size="12">3</text>
+  <rect x="118" y="172" width="490" height="80" rx="5" fill="#fdf3ef" stroke="#a83c2e" stroke-width="1.5"/>
+  <text x="136" y="194" font-size="15" fill="#8c2f24" font-weight="bold">选择 ① （seq 66 · 江明）——"看什么？"</text>
+  <text x="136" y="213" font-size="12.5" fill="#5c554a">「周叔下回还问，你还替我挡？」「刚才怎么不让我说？」</text>
+  <text x="136" y="229" font-size="12.5" fill="#5c554a">「没什么。门槛右边你别踩。」「（不答话）」← 剧本超时支做成普通选项</text>
+  <text x="136" y="245" font-size="12" fill="#a83c2e">✦ 分支真实改变 seq 69–88 的来回对话，随后汇合</text>
+  <!-- 4 -->
+  <circle cx="80" cy="308" r="13" fill="#2c2822"/>
+  <text x="80" y="313" text-anchor="middle" fill="#f6f1e5" font-size="12">4</text>
+  <rect x="118" y="272" width="490" height="64" rx="5" fill="#fffdf7" stroke="#e2d9c6"/>
+  <text x="136" y="294" font-size="15" fill="#2c2822" font-weight="bold">钩子落下 · 韩策送帖（S01 后段）</text>
+  <text x="136" y="313" font-size="12.5" fill="#5c554a">复名帖 + 腰牌 + 接脉消息：明早卯时启阵、十年一次、旧伤等不了</text>
+  <text x="136" y="329" font-size="12.5" fill="#5c554a">bgm_uneasy 切入 ｜ 江明答应回山见人，没答应接脉 ｜ 惠卿读帖、去找剑</text>
+  <!-- 5 -->
+  <circle cx="80" cy="392" r="13" fill="#2c2822"/>
+  <text x="80" y="397" text-anchor="middle" fill="#f6f1e5" font-size="12">5</text>
+  <rect x="118" y="356" width="490" height="64" rx="5" fill="#fffdf7" stroke="#e2d9c6"/>
+  <text x="136" y="378" font-size="15" fill="#2c2822" font-weight="bold">第二幕 · 旧东西（S02 前段）</text>
+  <text x="136" y="397" font-size="12.5" fill="#5c554a">bg_store_night→bg_courtyard_night ｜ 翻旧物·拆青衣侧缝·后院试剑</text>
+  <text x="136" y="413" font-size="12.5" fill="#5c554a">剑谱、旧衣、六年的痕迹陆续摆出来</text>
+  <!-- 6 choice -->
+  <circle cx="80" cy="484" r="13" fill="#a83c2e"/>
+  <text x="80" y="489" text-anchor="middle" fill="#f6f1e5" font-size="12">6</text>
+  <rect x="118" y="440" width="490" height="80" rx="5" fill="#fdf3ef" stroke="#a83c2e" stroke-width="1.5"/>
+  <text x="136" y="462" font-size="15" fill="#8c2f24" font-weight="bold">选择 ② （seq 272 · 江明）——青衣袖口处</text>
+  <text x="136" y="481" font-size="12.5" fill="#5c554a">「我又没答应接脉。」「你早就想过我会回去？」</text>
+  <text x="136" y="497" font-size="12.5" fill="#5c554a">「你说，我这伤真能接好？」「（不答话）」</text>
+  <text x="136" y="513" font-size="12" fill="#a83c2e">✦ 分支真实改变 seq 275–298 的来回对话，随后汇合</text>
+  <!-- 7 cut -->
+  <circle cx="80" cy="576" r="13" fill="#a83c2e"/>
+  <text x="80" y="581" text-anchor="middle" fill="#f6f1e5" font-size="12">7</text>
+  <rect x="118" y="540" width="490" height="64" rx="5" fill="#fdf3ef" stroke="#a83c2e" stroke-dasharray="6 4"/>
+  <text x="136" y="562" font-size="15" fill="#8c2f24" font-weight="bold">切断定格（seq 368）——"她继续替他抹开。"</text>
+  <text x="136" y="581" font-size="12.5" fill="#5c554a">试剑震药架 → 药罐旧事（"猫会把碎片收在井台底下？"）→ 涂药</text>
+  <text x="136" y="597" font-size="12.5" fill="#5c554a">最后一句落下，画面停住——第 369 步起是第三幕，本试玩不播</text>
+  <!-- 8 end -->
+  <circle cx="80" cy="656" r="13" fill="#2c2822"/>
+  <text x="80" y="661" text-anchor="middle" fill="#f6f1e5" font-size="12">8</text>
+  <rect x="118" y="620" width="490" height="64" rx="5" fill="#fffdf7" stroke="#c9a96a" stroke-width="1.5"/>
+  <text x="136" y="642" font-size="15" fill="#2c2822" font-weight="bold">结算页（导流）</text>
+  <text x="136" y="661" font-size="12.5" fill="#5c554a">悬念文案 → "你的选择"摘要两行 → "去入戏 App 看结局" → enterdrama.cn</text>
+  <text x="136" y="677" font-size="12.5" fill="#5c554a">激励视频广告占位卡 ｜ "重玩一次"清进度</text>
+  <!-- 9 exits -->
+  <rect x="118" y="700" width="235" height="42" rx="5" fill="#8c2f24"/>
+  <text x="236" y="726" text-anchor="middle" font-size="14" fill="#f8f3e6" font-weight="bold">出口 A · 跳官网</text>
+  <rect x="373" y="700" width="235" height="42" rx="5" fill="#5c5346"/>
+  <text x="490" y="726" text-anchor="middle" font-size="14" fill="#f8f3e6" font-weight="bold">出口 B · 重玩一次</text>
+</svg>
+</div>
+
+<h2>分步细则</h2>
+<p class="sub">逐步翻看每一段的"画面 / 玩家 / 系统 / 验收"。</p>
+<div class="steps-nav">
+  <button id="prev">‹ 上一步</button>
+  <div class="dots" id="dots"></div>
+  <button id="next">下一步 ›</button>
+</div>
+<div class="card step-card" id="stepCard"></div>
+
+<h2>界面与质感（Look and Feel）</h2>
+<div class="card">
+  <div class="pal">
+    <div class="sw"><i style="background:#f6f1e5"></i><em>宣纸米白 · 底</em></div>
+    <div class="sw"><i style="background:#2c2822"></i><em>墨黑 · 正文</em></div>
+    <div class="sw"><i style="background:#a83c2e"></i><em>朱砂 · 点睛</em></div>
+    <div class="sw"><i style="background:#c9a96a"></i><em>淡金 · 分隔</em></div>
+    <div class="sw"><i style="background:#5c5346"></i><em>陶土 · 辅助</em></div>
+  </div>
+  <ul>
+    <li><b>古风拟物</b>：宣纸底、墨色字、朱砂印章式按钮；细回纹/云纹描边，克制不堆砌。</li>
+    <li><b>字体</b>：衬线宋楷系；标题与正文同族不同字重。</li>
+    <li><b>场景美术</b>：直接复用《回山》官方资产——药铺朴素、宗门仙气，两种空间不混。</li>
+    <li><b>动效</b>：打字机逐字、朱砂印"盖下"微动效、背景淡入淡出。不做多余特效。</li>
+    <li><b>避免</b>：玻璃拟态、纯黑底白字、Q 版、剧本外插画。</li>
+  </ul>
+  <div class="mock">
+    <div class="scene"></div>
+    <div class="banner">▾ 广告占位 · 底部 BANNER（假素材 + "广告"角标）▾</div>
+    <div class="dialog">
+      <div class="avatar">陈</div>
+      <div class="who">陈惠卿</div>
+      <div class="txt">冬天你嫌井边滑，就挪到这儿了。头一晚把我的药罐震下来一个。</div>
+    </div>
+  </div>
+  <div class="mock" style="margin-top:14px">
+    <div class="scene"></div>
+    <div class="choices">
+      <div class="btn">周叔下回还问，你还替我挡？</div>
+      <div class="btn">刚才怎么不让我说？</div>
+      <div class="btn">没什么。门槛右边你别踩。</div>
+      <div class="btn mute">（不答话）</div>
+    </div>
+  </div>
+  <p class="sub" style="margin-top:12px">上：对话层示意（宣纸对话框 + 头像 + 底部 banner 位）。下：选择层示意（朱砂印选项卡组，含"不答话"）。</p>
+</div>
+
+<h2>行为细则</h2>
+<p class="sub">点开各组看完整行为与验收标准。</p>
+<details open>
+  <summary>有声播放器</summary>
+  <div class="body">
+    <ul>
+      <li>旁白逐句播 <code>nar_*.mp3</code>（切片内全量现成）；台词行播角色配音——构建期盘点现成资产，缺的只为这 368 步补生成，<b>不许台词无声</b>。</li>
+      <li>打字机与配音同步；点击屏幕＝未完句立即完整、已完成则下一句；音频不打断。</li>
+      <li>BGM 按 music 步切换循环（<code>bgm_daily</code> → <code>bgm_uneasy</code> → 回 <code>bgm_daily</code>）；不播剧本文本外音效。</li>
+      <li>背景随 background 步淡入淡出（本切片 4 张：shop_dusk / shop_night / store_night / courtyard_night）。</li>
+    </ul>
+    <ul class="check">
+      <li>轻触后 3 秒内第一句配音出声</li>
+      <li>每句出现即有声；点按能跳句不卡死</li>
+      <li>4 处背景切换与 music 步切换在正确节点发生</li>
+    </ul>
+  </div>
+</details>
+<details>
+  <summary>玩家选择（两处）</summary>
+  <div class="body">
+    <ul>
+      <li>seq 66 / seq 272 各弹 4 选项：3 个剧本原文选项（逐字照抄，不缩写不润色）+ 1 个"（不答话）"（即剧本超时支，无倒计时）。</li>
+      <li>选择后按钮收起、播对应分支、汇合后继续；选择记入结算页摘要。</li>
+    </ul>
+    <ul class="check">
+      <li>两处各出 4 枚按钮，文案与剧本正本逐字一致</li>
+      <li>选 A 与选 B 后接下来的台词确实不同（对照两条路径各走一遍）</li>
+      <li>"（不答话）"走通剧本超时支（seq 67→89 / seq 273→299）</li>
+    </ul>
+  </div>
+</details>
+<details>
+  <summary>结算页（导流）</summary>
+  <div class="body">
+    <ul>
+      <li>自上而下：定格背景压暗 + 朱砂印"待续" → 悬念文案 → "你的选择"摘要 → CTA → 激励视频占位卡 → "重玩一次"。</li>
+      <li>悬念文案初稿：主句<b>"天亮之前，他得给个答案。"</b>副句"可这段对话，停在了药膏擦上去的那一刻。"（agent 起草，待学习者批准）</li>
+      <li>摘要两行：<code>第一幕，你替江明说：「……」</code> / <code>第二幕，你替江明说：「……」</code>；选沉默则显示"他没答话。"</li>
+      <li>CTA <b>"去入戏 App 看结局"</b> → 新窗口打开 <code>https://www.enterdrama.cn/</code></li>
+      <li><code>document.title</code>＝分享标题初稿："入戏·回山试玩｜天亮之前，他得选"（微信分享卡默认取页面标题，不接 JS-SDK）</li>
+    </ul>
+    <ul class="check">
+      <li>摘要与实际所选逐字一致（含沉默显示"他没答话。"）</li>
+      <li>CTA 在微信与手机浏览器中都能打开官网</li>
+      <li>"重玩一次"清空进度、回到轻触首屏</li>
+    </ul>
+  </div>
+</details>
+<details>
+  <summary>广告占位（假素材演示）</summary>
+  <div class="body">
+    <ul>
+      <li><b>底部 banner 位</b>：自制古风修仙风假广告图 + "广告"角标；播放中常驻（结算页隐藏）。</li>
+      <li><b>激励视频位</b>：结算页假广告卡 → 点击演示完整结构：全屏假广告图 → 3 秒倒计时 → 出现关闭 → 返回结算页。</li>
+    </ul>
+    <ul class="check">
+      <li>banner 播放全程可见（结算页除外）、带"广告"角标</li>
+      <li>激励视频位可走完"点开→倒计时→关闭→回结算页"全流程</li>
+    </ul>
+  </div>
+</details>
+<details>
+  <summary>进度与重玩</summary>
+  <div class="body">
+    <ul>
+      <li>localStorage 记当前 seq 路径位置 + 两个选择结果；关页重开<b>直接恢复到断点台词</b>（不询问）。</li>
+      <li>无进度 → 从轻触首屏开始；结算页"重玩一次" → 清记录从头。</li>
+    </ul>
+    <ul class="check">
+      <li>播到任一处关页重开，接着上一句继续，已做选择不丢</li>
+      <li>清空 localStorage 后从头开始</li>
+    </ul>
+  </div>
+</details>
+
+<h2>状态与边界</h2>
+<table>
+  <tr><th>状态</th><th>表现</th></tr>
+  <tr><td><b>首次使用</b></td><td>手机浏览器禁自动出声 → 首屏＝第一幕背景铺满 + "轻触 开启剧情"印，点击后音频起。对 scope"无加载页"的最小调和：无菜单信息，只有一次必要点击。（构建期按微信实测校准）</td></tr>
+  <tr><td><b>断点恢复</b></td><td>有进度→直接跳断点继续（选择结果一并还原）；无进度→从头。</td></tr>
+  <tr><td><b>音频缺失/慢</b></td><td>台词照常打字机推进，配音静默降级，绝不阻塞或白屏。</td></tr>
+  <tr><td><b>资产加载失败</b></td><td>背景缺失用暗色底 + 场景名淡字占位，流程不中断。</td></tr>
+  <tr><td><b>结算页是终点</b></td><td>只能跳官网或重玩，无"继续阅读"。</td></tr>
+  <tr><td><b>微信内置浏览器</b></td><td>可完整游玩；分享卡标题即页面 title；不接 JS-SDK。</td></tr>
+  <tr><td><b>桌面端</b></td><td>居中竖屏画布可完整走通，不深适配。</td></tr>
+  <tr><td><b>内容边界</b></td><td>只播正本 seq 1–368，剧本文字零改动；新增文字仅限界面 chrome + 结算页文案 + 分享标题（均已列初稿）。</td></tr>
+</table>
+
+<h2>已定的产品决定</h2>
+<div class="card">
+  <div class="dec"><b>玩家双角色全操纵</b><div class="why">原版双人对局，H5 单人玩：江明、惠卿的选择都由玩家做。本切片两处选择都是江明的，摘要称"你替江明说"。</div></div>
+  <div class="dec"><b>切断点＝第二幕末"她继续替他抹开。"（seq 368）</b><div class="why">符合 scope 原则：2 次选择已做、分支后果已尝到、接脉大钩子已砸下，在最温柔处突然断掉。</div></div>
+  <div class="dec"><b>开场约 64 步日常原样保留</b><div class="why">日常铺垫是这剧本的根，黄金三章逻辑靠日常质感立信，不精简。</div></div>
+  <div class="dec"><b>超时支做成"（不答话）"普通选项</b><div class="why">保留剧本超时内容，不给玩家倒计时压力。</div></div>
+  <div class="dec"><b>localStorage 断点续玩 ｜ 结算页带"你的选择"摘要 ｜ 假广告做像样的假图 ｜ 视觉古风拟物</b><div class="why">均为学习者逐项拍板。</div></div>
+  <div class="dec"><b>官网 https://www.enterdrama.cn/ ｜ 结算/分享文案由 agent 起草</b><div class="why">文案初稿已列于本文档，属评审项，批准即定稿（非学习者原创，待批）。</div></div>
+</div>
+
+<h2>不做与顺延</h2>
+<div class="cols">
+  <div class="card">
+    <b>POC 外顺延</b>
+    <ul style="padding-left:1.3em; margin-top:8px; font-size:14px">
+      <li>第三幕起的全部剧情（含第七/八幕真分支与 5 尾声）——真分支是"去官网看"的理由</li>
+      <li>惠卿视角的选择点（第三幕后才有）</li>
+      <li>分享卡自生成、埋点、真实广告网络、口令/深链、多剧本模板</li>
+      <li>入戏 App 引擎特性（多人房间、实时对局、账号）</li>
+    </ul>
+  </div>
+  <div class="card">
+    <b>明确不做</b>
+    <ul style="padding-left:1.3em; margin-top:8px; font-size:14px">
+      <li>不登录、无后端、无实时 LLM（scope 明砍）</li>
+      <li>不改剧本文本——原样裁剪是"产品本体的一刀切片"承诺</li>
+      <li>不接真实广告网络——只做假素材演示</li>
+      <li>不做桌面深度适配——消费场景在手机</li>
+    </ul>
+  </div>
+</div>
+
+<h2>待办问题（不阻塞 4-spec）</h2>
+<div class="card" style="font-size:14.5px">
+  <ul style="padding-left:1.3em">
+    <li><b>台词（非旁白）配音资产现状</b>——旁白 nar_* 全量现成；台词行音频构建期盘点，缺则只为这 368 步补生成。</li>
+    <li><b>结算页与分享文案初稿</b>——本文档已起草，学习者批准后定稿。</li>
+    <li><b>微信"轻触解锁音频"具体表现</b>——首屏方案已定，机型差异构建期实测校准。</li>
+  </ul>
+</div>
+
+<footer>
+  <div class="seal">待续</div>
+  <p>Markdown 正本：devpost/prd.md（status: approved）· 进入 4-spec</p>
+</footer>
+
+</div>
+<script>
+  const steps=[
+    {t:"轻触首屏",tag:"seq 0 · 唯一一次点击门槛",rows:[
+      ["画面","第一幕背景 bg_shop_dusk 傍晚药铺铺满全屏，居中一枚'轻触 开启剧情'朱砂印"],
+      ["玩家","点一下——同时解锁手机浏览器的音频播放"],
+      ["系统","点击后 bgm_daily 起，第一句旁白配音出声，进入第一幕"],
+      ["验收","轻触后 3 秒内第一句配音出声；无任何菜单/加载文案"],1]},
+    {t:"第一幕 · 照常开门",tag:"seq 1–65 · 约 64 步日常原样保留",rows:[
+      ["画面","bg_shop_dusk → bg_shop_night；宣纸对话框 + 头像，打字机逐字"],
+      ["玩家","读/听：修门槛、替老周抓药、喜酒打趣、分半碗饭；点按跳句"],
+      ["系统","旁白播 nar_*.mp3，台词播角色配音；bgm_daily 循环"],
+      ["验收","每句出现即有声；点按跳句不卡死"],0]},
+    {t:"选择 ① ",tag:"seq 66 · 江明的选择 · 分支真实改变后续",rows:[
+      ["画面","选项卡组替换对话框：4 枚朱砂印按钮"],
+      ["玩家","选：「周叔下回还问，你还替我挡？」/「刚才怎么不让我说？」/「没什么。门槛右边你别踩。」/「（不答话）」"],
+      ["系统","播对应分支（seq 69–88 各不相同）后汇合；选择记入摘要"],
+      ["验收","4 枚按钮文案与剧本正本逐字一致；选 A/B 后续台词确实不同"],1]},
+    {t:"钩子落下 · 韩策送帖",tag:"S01 后段 · 接脉消息砸下",rows:[
+      ["画面","复名帖、腰牌；bgm_uneasy 切入"],
+      ["玩家","继续读/听：明早卯时启阵、十年一次、旧伤等不了"],
+      ["系统","江明答应回山见人、没答应接脉；惠卿读帖、去找剑"],
+      ["验收","BGM 在正确节点切入；'更大的钩子'在此出现"],0]},
+    {t:"第二幕 · 旧东西",tag:"S02 前段 · 旧物与旧伤",rows:[
+      ["画面","bg_store_night → bg_courtyard_night：翻旧物、拆青衣侧缝、后院试剑"],
+      ["玩家","继续读/听；点按跳句"],
+      ["系统","bgm_daily 复用；旧剑、旧衣、六年痕迹陆续摆出来"],
+      ["验收","两处背景切换与 music 步在正确节点发生"],0]},
+    {t:"选择 ② ",tag:"seq 272 · 江明的选择 · 青衣袖口处",rows:[
+      ["画面","选项卡组再次出现"],
+      ["玩家","选：「我又没答应接脉。」/「你早就想过我会回去？」/「你说，我这伤真能接好？」/「（不答话）」"],
+      ["系统","播对应分支（seq 275–298）后汇合；选择记入摘要"],
+      ["验收","同选择①：文案逐字一致、分支真实、'（不答话）'走通超时支 seq 273→299"],1]},
+    {t:"切断定格",tag:"seq 368 · '她继续替他抹开。'",rows:[
+      ["画面","试剑震药架 → 药罐旧事 → 她拉过他的手腕涂肩伤；最后一句落下，画面停住"],
+      ["玩家","无操作——被切断"],
+      ["系统","约 1 秒静场后进结算页；第 369 步起是第三幕，本试玩不播"],
+      ["验收","从选择②到切断的整段情感拍点完整播出，切在'她继续替他抹开。'之后"],1]},
+    {t:"结算页 · 导流",tag:"终点 · 两个出口",rows:[
+      ["画面","定格背景压暗 + 朱砂印'待续' → 悬念文案 → 摘要 → CTA → 激励视频占位卡 → 重玩"],
+      ["玩家","读悬念文案与自己的两条选择；点'去入戏 App 看结局'跳 enterdrama.cn，或点激励视频占位看演示，或重玩"],
+      ["系统","摘要两行与所选逐字一致（沉默显示'他没答话。'）；激励视频位走完'点开→3 秒倒计时→关闭→回'全流程"],
+      ["验收","CTA 在微信与手机浏览器都能打开官网；'重玩一次'清进度回首屏"],0]},
+  ];
+  let cur=0;
+  const card=document.getElementById('stepCard'), dots=document.getElementById('dots');
+  steps.forEach((s,i)=>{const d=document.createElement('span');d.onclick=()=>show(i);dots.appendChild(d);});
+  function show(i){
+    cur=(i+steps.length)%steps.length;
+    const s=steps[cur];
+    const kind=s[4]? '<span class="k gold">验收</span>':'<span class="k ok">验收</span>';
+    card.innerHTML=`<h3>${cur+1} · ${s.t}</h3><div class="tag">${s.tag}</div>`+
+      s.rows.map(r=>`<div class="row"><span class="k${r[0]==='验收'?(s[4]?' gold':' ok'):''}">${r[0]}</span><span>${r[1]}</span></div>`).join('');
+    [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===cur));
+  }
+  document.getElementById('prev').onclick=()=>show(cur-1);
+  document.getElementById('next').onclick=()=>show(cur+1);
+  show(0);
+</script>
+</body>
+</html>

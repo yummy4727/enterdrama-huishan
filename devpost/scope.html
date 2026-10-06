@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>回山试玩版 · Scope 可视化</title>
+<style>
+  :root {
+    --ink: #2b2622;
+    --ink-soft: #6b5f55;
+    --paper: #f7f3ec;
+    --card: #fffdf8;
+    --accent: #9a4a2e;
+    --accent-soft: #c97b5a;
+    --gold: #b98a2f;
+    --line: #e5dccb;
+    --good: #4a7c59;
+    --later: #8a6d3b;
+    --cut: #a03d3d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Source Han Serif SC", "Noto Serif SC", Georgia, "Microsoft YaHei", serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    padding: 2rem 1rem 4rem;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 2.5rem; }
+  .tag {
+    display: inline-block; font-size: .8rem; letter-spacing: .35em; color: var(--accent);
+    border: 1px solid var(--accent-soft); padding: .15rem .9rem .15rem 1.15rem; border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  h1 { font-size: 2rem; font-weight: 700; letter-spacing: .06em; }
+  .oneliner { margin-top: .8rem; color: var(--ink-soft); font-size: 1.02rem; }
+  .en { margin-top: .4rem; font-size: .85rem; color: #a09484; font-family: Georgia, serif; font-style: italic; }
+  .status { margin-top: 1rem; font-size: .8rem; color: var(--good); }
+  .status::before { content: "● "; }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 1.6rem 1.8rem; margin-bottom: 1.4rem; }
+  h2 { font-size: 1.1rem; letter-spacing: .12em; color: var(--accent); margin-bottom: 1rem; }
+  h2 small { color: var(--ink-soft); font-weight: 400; letter-spacing: 0; font-size: .8rem; margin-left: .5rem; }
+  .kernel { font-size: 1.15rem; }
+  .kernel strong { color: var(--accent); }
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  @media (max-width: 640px) { .duo { grid-template-columns: 1fr; } }
+  .duo h3 { font-size: .95rem; margin-bottom: .4rem; color: var(--ink); }
+  .duo p { font-size: .92rem; color: var(--ink-soft); }
+  figure { margin: 0; }
+  figcaption { text-align: center; font-size: .8rem; color: var(--ink-soft); margin-top: .6rem; }
+  details { border-top: 1px dashed var(--line); padding: .8rem 0; }
+  details:last-child { border-bottom: 1px dashed var(--line); }
+  summary { cursor: pointer; font-weight: 600; list-style: none; position: relative; padding-left: 1.5rem; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "▸"; position: absolute; left: .2rem; color: var(--accent-soft); transition: transform .15s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  details ul { margin: .6rem 0 .2rem 1.6rem; font-size: .92rem; color: var(--ink-soft); }
+  details li { margin-bottom: .3rem; }
+  .now summary::before { color: var(--good); }
+  .later summary::before { color: var(--later); }
+  .cut summary::before { color: var(--cut); }
+  .why { font-size: .95rem; color: var(--ink-soft); border-left: 3px solid var(--gold); padding-left: 1rem; }
+  .beat { margin-top: 1rem; background: #fbf7ee; border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1.1rem; font-size: .95rem; }
+  .beat b { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="tag">SCOPE · 已批准</div>
+  <h1>回山试玩版</h1>
+  <p class="oneliner">把入戏的正式剧本《回山》做成手机浏览器即点即玩的互动试玩 H5，玩到悬念处切断，导流官网——一份"能玩的买量广告"。</p>
+  <p class="en">A playable-demo H5 built from real script assets (voiceover · art · branching) — play a slice of《回山》, hit the cliffhanger, continue in the app.</p>
+  <div class="status">devpost/scope.md · status: approved · 2026-10-06</div>
+</header>
+
+<section>
+  <h2>独特内核 <small>The Unique Kernel</small></h2>
+  <p class="kernel">游戏买量圈验证了 playable ad 是转化率最高的广告形态，但没人给<strong>文字互动剧</strong>做过。这里用的是<strong>真实剧本资产的切片</strong>：TTS 配音、场景美术、真分支——不是宣传片，是产品本体的一刀。</p>
+</section>
+
+<section>
+  <h2>全景图 <small>用户 → 核心循环 → 证明 → 导流</small></h2>
+  <figure>
+    <svg viewBox="0 0 780 300" role="img" aria-label="用户经分享卡进入试玩，经历核心循环后切断导流至官网" style="width:100%;height:auto;font-family:inherit">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#9a4a2e"/>
+        </marker>
+      </defs>
+      <!-- 用户 -->
+      <rect x="10" y="105" width="130" height="88" rx="12" fill="#fffdf8" stroke="#b98a2f" stroke-width="1.5"/>
+      <text x="75" y="138" text-anchor="middle" font-size="14" fill="#2b2622" font-weight="bold">泛娱乐用户</text>
+      <text x="75" y="160" text-anchor="middle" font-size="11" fill="#6b5f55">微信/朋友圈</text>
+      <text x="75" y="176" text-anchor="middle" font-size="11" fill="#6b5f55">点开剧情分享卡</text>
+      <!-- 核心循环 -->
+      <rect x="185" y="20" width="380" height="258" rx="14" fill="#fbf7ee" stroke="#9a4a2e" stroke-width="1.5"/>
+      <text x="375" y="46" text-anchor="middle" font-size="13" fill="#9a4a2e" font-weight="bold" letter-spacing="2">核 心 循 环</text>
+      <rect x="215" y="62" width="320" height="40" rx="9" fill="#fffdf8" stroke="#e5dccb"/>
+      <text x="375" y="87" text-anchor="middle" font-size="12.5" fill="#2b2622">① 第一秒：配音台词 + 场景图（无菜单无登录）</text>
+      <rect x="215" y="118" width="320" height="40" rx="9" fill="#fffdf8" stroke="#e5dccb"/>
+      <text x="375" y="143" text-anchor="middle" font-size="12.5" fill="#2b2622">② 做选择 → 剧情真分岔（2 个选择点）</text>
+      <rect x="215" y="174" width="320" height="40" rx="9" fill="#fffdf8" stroke="#e5dccb"/>
+      <text x="375" y="199" text-anchor="middle" font-size="12.5" fill="#2b2622">③ 悬念拉起 → 切断（cliffhanger）</text>
+      <rect x="215" y="230" width="320" height="36" rx="9" fill="#f4ead8" stroke="#b98a2f"/>
+      <text x="375" y="253" text-anchor="middle" font-size="12.5" fill="#7a5a1d">④ 结算页：广告占位 + 「结局在入戏」</text>
+      <path d="M375,102 L375,114" stroke="#9a4a2e" stroke-width="1.5" marker-end="url(#arr)"/>
+      <path d="M375,158 L375,170" stroke="#9a4a2e" stroke-width="1.5" marker-end="url(#arr)"/>
+      <path d="M375,214 L375,226" stroke="#9a4a2e" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- 导流 -->
+      <rect x="610" y="105" width="160" height="88" rx="12" fill="#fffdf8" stroke="#9a4a2e" stroke-width="1.5"/>
+      <text x="690" y="138" text-anchor="middle" font-size="14" fill="#9a4a2e" font-weight="bold">跳转官网</text>
+      <text x="690" y="160" text-anchor="middle" font-size="11" fill="#6b5f55">→ 下载入戏</text>
+      <text x="690" y="176" text-anchor="middle" font-size="11" fill="#6b5f55">继续这段故事</text>
+      <path d="M140,149 L181,149" stroke="#9a4a2e" stroke-width="1.8" marker-end="url(#arr)"/>
+      <path d="M569,149 L606,149" stroke="#9a4a2e" stroke-width="1.8" marker-end="url(#arr)"/>
+      <!-- 重玩回路 -->
+      <path d="M375,20 C 375,-8 90,-8 75,101" fill="none" stroke="#b98a2f" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+      <text x="215" y="14" text-anchor="middle" font-size="10.5" fill="#8a6d3b">重玩换分支 · 分享给朋友「你选哪个」</text>
+    </svg>
+    <figcaption>分享卡带人进来，循环走到第④步切断，出口只有一个：官网。</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="duo">
+    <div>
+      <h3>给谁用</h3>
+      <p>微信/朋友圈里被剧情卡戳到的言情·修仙读者、乙女向文字玩家。爱故事，但警惕"下载陌生 App"；给得起 3 分钟无登录试玩。</p>
+    </div>
+    <div>
+      <h3>为什么做</h3>
+      <p>给入戏攒一个可复用增长资产：比赛后直接真实投放，验证「试玩 → 官网 → 下载」漏斗。一份工作，比赛提交 + 真实导流两份收益。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>做到什么算成 <small>What "Working" Looks Like</small></h2>
+  <p style="font-size:.95rem; color:var(--ink-soft)">手机浏览器（含微信内置）点开 → 无登录 30 秒内进入第一幕（配音+场景+打字机台词）→ 走完 2 个选择点（分支真变）→ 悬念切断 → 结算页可跳官网；页面含底部 banner 与结算页激励视频两处占位。</p>
+  <div class="beat"><b>"oh, that's cool" 的一拍：</b>点开第一秒就是出声的剧情；第一次按下选择键后，下一幕真的不一样。</div>
+</section>
+
+<section>
+  <h2>边界 <small>Now / Later / Cut</small></h2>
+  <details class="now" open>
+    <summary>POC 包含（现在做）</summary>
+    <ul>
+      <li>单剧本《回山》一条精选试玩线（资产位置：D:\恋爱剧本交友\剧本\回山）</li>
+      <li>内容全预制：剧本 JSON + TTS 音频 + 场景美术，静态托管，无实时 LLM</li>
+      <li>2 个选择点 · 1 个切断悬念点 · 1 个导流结算页（跳官网）</li>
+      <li>广告位占位演示（结构搭好，不接真实广告网络）</li>
+      <li>移动端 H5 优先，微信内置浏览器可用；桌面可开不深优化</li>
+      <li>纯前端 + 静态托管，无自建后端</li>
+    </ul>
+  </details>
+  <details class="later">
+    <summary>Later（值得做，不是现在）</summary>
+    <ul>
+      <li>多剧本模板化（同一播放器换剧本）</li>
+      <li>真实广告网络接入</li>
+      <li>分享卡自生成（带玩家选择结果的个人化图卡）</li>
+      <li>埋点与转化统计 · 口令导流/深度链接直达剧本 · 桌面端精修</li>
+    </ul>
+  </details>
+  <details class="cut">
+    <summary>明确砍掉（各自有真实理由）</summary>
+    <ul>
+      <li><b>登录/账号</b> — 试玩即玩是转化前提，登录打穿漏斗</li>
+      <li><b>自建后端</b> — 内容与导流全静态，后端是纯多余复杂度</li>
+      <li><b>实时 AI 生成剧情</b> — 内容已预制；LLM 徒增成本/延迟/不可控（Built with AI 体现在构建过程）</li>
+      <li><b>剧情编辑器/多剧本接入</b> — 那是把 POC 做成产品</li>
+      <li><b>桌面端深度适配</b> — 传播与消费场景都在手机</li>
+    </ul>
+  </details>
+</section>
+
+<section>
+  <h2>基调参考 <small>Inspiration & Identity</small></h2>
+  <p class="why">手感对标游戏 playable ad：即点即玩、第一秒有反馈、零注册摩擦；视觉沿用《回山》古风水墨场景；节奏对标小说推文的"黄金三章"——最短路径给爽点，每次选择有可感知后果。具体切断幕次由 3-prd 读剧本后钉死。</p>
+</section>
+
+<footer style="text-align:center; margin-top:2rem; font-size:.78rem; color:#a09484">
+  本文为 devpost/scope.md 的可视化配套 · Markdown 为准 · Devpost Learn · Build With AI: Basics
+</footer>
+
+</div>
+</body>
+</html>

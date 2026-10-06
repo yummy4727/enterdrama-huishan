@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>回山试玩版</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <div class="bg-wrap">
+    <img id="bgA" class="bg show" alt="">
+    <img id="bgB" class="bg" alt="">
+    <div class="bg-fallback" id="bgFallback"></div>
+  </div>
+
+  <!-- 轻触首屏：唯一点击门（音频解锁在片 2 接入） -->
+  <div id="tapGate">
+    <div class="tap-seal"><span>轻触</span><span>开启剧情</span></div>
+  </div>
+
+  <!-- 对话层 -->
+  <div id="dialog" class="hidden">
+    <div class="avatar-wrap hidden"><img id="avatar" alt=""></div>
+    <div class="dialog-body">
+      <div id="charName" class="char-name"></div>
+      <div id="charText" class="char-text"></div>
+    </div>
+    <div class="click-hint" id="clickHint">轻触继续</div>
+  </div>
+
+  <!-- 选择层（片 3 精修为朱砂印章样式） -->
+  <div id="choices" class="hidden"></div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

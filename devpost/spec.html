@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>回山试玩版 · 技术规格评审</title>
+<style>
+  :root{
+    --paper:#f6f1e5; --card:#fffdf7; --ink:#2c2822; --ink2:#5c554a;
+    --cinnabar:#a83c2e; --cinnabar-dk:#8c2f24; --gold:#c9a96a; --line:#e2d9c6;
+    --ok:#4a7c59; --blue:#4a5f7c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Noto Serif SC","Source Han Serif SC","STSong","SimSun",serif;
+    line-height:1.75; padding:0 0 80px;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px}
+  header{padding:56px 0 28px; border-bottom:3px double var(--gold); margin-bottom:32px}
+  .chip{display:inline-block; font-size:13px; letter-spacing:.2em; padding:3px 14px;
+    border:1px solid var(--cinnabar); color:var(--cinnabar); border-radius:2px; margin-bottom:14px}
+  h1{font-size:34px; letter-spacing:.06em; font-weight:700}
+  .oneline{margin-top:12px; color:var(--ink2); font-size:15.5px; max-width:760px}
+  .oneline b{color:var(--cinnabar)}
+  h2{font-size:22px; letter-spacing:.1em; margin:52px 0 8px; display:flex; align-items:center; gap:12px}
+  h2::before{content:""; width:10px; height:10px; background:var(--cinnabar); transform:rotate(45deg); flex:none}
+  .sub{color:var(--ink2); font-size:14px; margin-bottom:18px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:6px;
+    padding:22px 24px; box-shadow:0 1px 0 rgba(44,40,34,.04)}
+  .card p{margin:8px 0; font-size:14.8px}
+  .card b{color:var(--cinnabar-dk)}
+  /* plain language numbered flow */
+  .plain ol{padding-left:1.4em; font-size:15px}
+  .plain li{margin:10px 0}
+  .plain .lead{font-size:15.5px; margin-bottom:14px}
+  /* diagram */
+  .diagram{overflow-x:auto; padding:6px 0}
+  .diagram svg{display:block; min-width:640px; margin:0 auto}
+  /* stepper */
+  .steps-nav{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:16px 0 14px}
+  .steps-nav button{font-family:inherit; font-size:14px; letter-spacing:.1em; cursor:pointer;
+    background:var(--card); color:var(--ink); border:1px solid var(--gold);
+    padding:6px 18px; border-radius:2px}
+  .steps-nav button:hover{background:var(--cinnabar); color:#fff; border-color:var(--cinnabar)}
+  .dots{display:flex; gap:7px; flex:1; justify-content:center}
+  .dots span{width:11px; height:11px; border-radius:50%; border:1px solid var(--gold);
+    cursor:pointer; transition:.2s}
+  .dots span.on{background:var(--cinnabar); border-color:var(--cinnabar); transform:scale(1.15)}
+  .step-card{animation:fade .3s}
+  @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1}}
+  .step-card h3{font-size:19px; letter-spacing:.08em; color:var(--cinnabar-dk); margin-bottom:4px}
+  .step-card .tag{font-size:12.5px; color:var(--ink2); letter-spacing:.15em; margin-bottom:14px}
+  .step-card .row{display:flex; gap:10px; margin:9px 0; font-size:14.5px}
+  .step-card .k{flex:none; width:72px; text-align:center; font-size:12.5px; letter-spacing:.15em;
+    color:#fff; background:var(--ink2); border-radius:2px; padding:2px 0; height:fit-content; margin-top:3px}
+  .step-card .k.gold{background:var(--cinnabar)}
+  .step-card .k.ok{background:var(--ok)}
+  .step-card .k.blue{background:var(--blue)}
+  /* accordions */
+  details{border:1px solid var(--line); border-radius:6px; background:var(--card); margin-bottom:10px}
+  summary{cursor:pointer; padding:14px 20px; font-size:16.5px; letter-spacing:.08em; font-weight:700;
+    list-style:none; display:flex; align-items:center; gap:10px}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"❧"; color:var(--gold); font-size:15px}
+  details[open] summary{border-bottom:1px dashed var(--line); color:var(--cinnabar-dk)}
+  details .body{padding:16px 22px 20px; font-size:14.5px}
+  details .body ul{padding-left:1.3em}
+  details .body li{margin:6px 0}
+  .prref{display:inline-block; font-size:12px; color:var(--blue); border:1px solid var(--blue);
+    border-radius:2px; padding:0 8px; margin-left:8px; vertical-align:2px; white-space:nowrap}
+  /* tables */
+  table{width:100%; border-collapse:collapse; background:var(--card); font-size:14px}
+  th,td{border:1px solid var(--line); padding:9px 13px; text-align:left; vertical-align:top}
+  th{background:#efe8d8; letter-spacing:.08em; font-size:13.5px; white-space:nowrap}
+  td b{color:var(--cinnabar-dk)}
+  /* file tree */
+  pre.tree{background:#2c2822; color:#e8e0cd; border-radius:6px; padding:20px 24px;
+    font-family:Consolas,"Courier New",monospace; font-size:13.5px; line-height:1.65; overflow-x:auto}
+  pre.tree .c{color:#9a8f77}
+  pre.tree .hot{color:#e8a49a; font-weight:700}
+  /* code */
+  code{font-family:Consolas,monospace; font-size:.92em; background:#efe8d8; padding:1px 6px; border-radius:3px}
+  pre.json{background:#2c2822; color:#e8e0cd; border-radius:6px; padding:16px 20px;
+    font-family:Consolas,monospace; font-size:13.5px; overflow-x:auto; margin-top:10px}
+  /* failure list */
+  .fail li{margin:10px 0}
+  .fail b{color:var(--cinnabar)}
+  /* decisions */
+  .who{display:inline-block; font-size:12px; letter-spacing:.15em; color:#fff; border-radius:2px;
+    padding:1px 9px; margin-right:8px; vertical-align:2px}
+  .who.l{background:var(--cinnabar)}
+  .who.d{background:var(--blue)}
+  .who.q{background:var(--gold)}
+  footer{margin-top:56px; padding-top:20px; border-top:1px solid var(--line);
+    color:var(--ink2); font-size:13px; text-align:center; letter-spacing:.1em}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="chip">技术规格 · 4-SPEC 评审</span>
+  <h1>回山试玩版 — Technical Spec</h1>
+  <p class="oneline">蓝图一句话：<b>一堆静态文件</b>——原生 HTML/CSS/JS 播放器 + 构建期 Node 脚本裁《回山》正本资产，无框架、无后端、无运行时依赖，任何静态托管都能跑。</p>
+</header>
+
+<h2>这套系统怎么运转（大白话）</h2>
+<p class="sub">读完这段你应该能向别人复述这个 app 是怎么回事（对应 spec.md > How This Works）</p>
+<div class="card plain">
+  <p class="lead">整个产品分两段工作，复杂度全部前置在构建期，玩家手机上只有最薄的一层：</p>
+  <ol>
+    <li><b>构建期（你的电脑，跑一次）</b>：Node 脚本读《回山》正本 <code>script.json</code>（1190 步），裁出 seq 1–368 存成 <code>script-slice.json</code>（文字零改动）；把切片用到的配音、BGM、背景图、头像拷进项目，图片压成 WebP（原图一张 3MB，手机太重）；盘点每步的配音文件，缺的生成一张清单，拿去走进戏的 TTS 管线补生成。</li>
+    <li><b>运行期（玩家手机）</b>：浏览器打开页面，轻触一下解锁声音，播放器按 seq 顺序读剧本数据——每步是一句台词/一次背景切换/一次音乐切换。台词配音出声、文字打字机逐字出现，点屏幕跳下一句。走到 66、272 两步弹选择，选完跳分支、汇合继续。走到 368 画面定格，结算页弹出：悬念文案、你的选择摘要、"去入戏 App 看结局"。</li>
+    <li><b>进度</b>：每播一步往 <code>localStorage</code>（浏览器给每个网站的一块本地小存储）记一笔，关页再开直接从断点接着播。</li>
+  </ol>
+</div>
+
+<h2>架构与数据流</h2>
+<p class="sub">构建期一条流水线，运行期一个状态机；资产不入 GitHub 仓库，本地构建后直接上云</p>
+<div class="card diagram">
+<svg viewBox="0 0 880 470" width="880" height="470" font-family="'Noto Serif SC',SimSun,serif">
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#8c2f24"/>
+    </marker>
+    <marker id="arb" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#4a5f7c"/>
+    </marker>
+  </defs>
+  <!-- lane labels -->
+  <text x="16" y="30" font-size="13" letter-spacing="3" fill="#8c2f24">构建期（跑一次）</text>
+  <text x="16" y="252" font-size="13" letter-spacing="3" fill="#4a5f7c">运行期（玩家手机）</text>
+  <line x1="0" y1="236" x2="880" y2="236" stroke="#c9a96a" stroke-dasharray="6 5"/>
+
+  <!-- build lane -->
+  <rect x="20" y="48" width="188" height="86" rx="5" fill="#fffdf7" stroke="#a83c2e" stroke-width="1.4"/>
+  <text x="114" y="74" text-anchor="middle" font-size="15" font-weight="700" fill="#2c2822">《回山》正本资产</text>
+  <text x="114" y="96" text-anchor="middle" font-size="12" fill="#5c554a">script.json 1190 步</text>
+  <text x="114" y="114" text-anchor="middle" font-size="12" fill="#5c554a">旁白 749 mp3 · 4 BGM · 18 图</text>
+
+  <rect x="292" y="48" width="180" height="86" rx="5" fill="#a83c2e"/>
+  <text x="382" y="78" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">scripts/build.mjs</text>
+  <text x="382" y="99" text-anchor="middle" font-size="11.5" fill="#f3ddd8">裁剪 · 拷贝 · 压缩 WebP</text>
+  <text x="382" y="116" text-anchor="middle" font-size="11.5" fill="#f3ddd8">盘点配音 · 生成清单</text>
+
+  <rect x="556" y="30" width="150" height="54" rx="5" fill="#fffdf7" stroke="#e2d9c6"/>
+  <text x="631" y="52" text-anchor="middle" font-size="13" font-weight="700" fill="#2c2822">script-slice.json</text>
+  <text x="631" y="70" text-anchor="middle" font-size="11" fill="#5c554a">seq 1–368 零改动</text>
+  <rect x="556" y="94" width="150" height="54" rx="5" fill="#fffdf7" stroke="#e2d9c6"/>
+  <text x="631" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#2c2822">audio-manifest</text>
+  <text x="631" y="134" text-anchor="middle" font-size="11" fill="#5c554a">seq → mp3 映射</text>
+  <rect x="722" y="62" width="142" height="54" rx="5" fill="#fffdf7" stroke="#e2d9c6"/>
+  <text x="793" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#2c2822">data/assets/</text>
+  <text x="793" y="102" text-anchor="middle" font-size="11" fill="#5c554a">压缩图 + 音频</text>
+
+  <line x1="208" y1="91" x2="286" y2="91" stroke="#8c2f24" stroke-width="1.6" marker-end="url(#ar)"/>
+  <line x1="472" y1="76" x2="550" y2="57" stroke="#8c2f24" stroke-width="1.6" marker-end="url(#ar)"/>
+  <line x1="472" y1="91" x2="550" y2="118" stroke="#8c2f24" stroke-width="1.6" marker-end="url(#ar)"/>
+  <line x1="472" y1="112" x2="716" y2="94" stroke="#8c2f24" stroke-width="1.6" marker-end="url(#ar)"/>
+
+  <!-- TTS loop -->
+  <rect x="292" y="156" width="180" height="52" rx="5" fill="#fffdf7" stroke="#c9a96a" stroke-dasharray="5 4"/>
+  <text x="382" y="178" text-anchor="middle" font-size="13" fill="#8c2f24" font-weight="700">入戏 TTS 管线</text>
+  <text x="382" y="196" text-anchor="middle" font-size="11" fill="#5c554a">按 audio-missing.json 补台词配音</text>
+  <path d="M382,134 L382,150" stroke="#4a5f7c" stroke-width="1.4" marker-end="url(#arb)" fill="none"/>
+  <path d="M382,208 L382,224 L760,224 L760,122" stroke="#c9a96a" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#ar)" fill="none"/>
+  <text x="560" y="220" text-anchor="middle" font-size="11" fill="#8c6a2f">补好的 mp3 回流 → 重跑构建</text>
+
+  <!-- runtime lane -->
+  <rect x="20" y="300" width="210" height="120" rx="5" fill="#fffdf7" stroke="#4a5f7c" stroke-width="1.4"/>
+  <text x="125" y="328" text-anchor="middle" font-size="15" font-weight="700" fill="#2c2822">index.html + js/*</text>
+  <text x="125" y="352" text-anchor="middle" font-size="12" fill="#5c554a">播放器引擎（步进状态机）</text>
+  <text x="125" y="372" text-anchor="middle" font-size="12" fill="#5c554a">打字机 · 配音 · BGM · 背景</text>
+  <text x="125" y="392" text-anchor="middle" font-size="12" fill="#5c554a">选择层 · 结算层 · 广告占位</text>
+
+  <rect x="330" y="300" width="180" height="120" rx="5" fill="#4a5f7c"/>
+  <text x="420" y="330" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">localStorage</text>
+  <text x="420" y="352" text-anchor="middle" font-size="11.5" fill="#dde4ee">huishan_trial_v1</text>
+  <text x="420" y="372" text-anchor="middle" font-size="11.5" fill="#dde4ee">{ seq, choices }</text>
+  <text x="420" y="392" text-anchor="middle" font-size="11.5" fill="#dde4ee">断点恢复 · 重玩清除</text>
+
+  <rect x="610" y="300" width="250" height="120" rx="5" fill="#fffdf7" stroke="#a83c2e" stroke-width="1.4"/>
+  <text x="735" y="328" text-anchor="middle" font-size="15" font-weight="700" fill="#8c2f24">静态托管</text>
+  <text x="735" y="352" text-anchor="middle" font-size="12" fill="#5c554a">本地 npx serve（试玩/录屏）</text>
+  <text x="735" y="372" text-anchor="middle" font-size="12" fill="#5c554a">腾讯云 nginx enterdrama.cn/trial</text>
+  <text x="735" y="392" text-anchor="middle" font-size="12" fill="#5c554a">（可选 Try-it-out 链接）</text>
+
+  <line x1="712" y1="128" x2="125" y2="294" stroke="#4a5f7c" stroke-width="1.6" marker-end="url(#arb)"/>
+  <text x="330" y="222" font-size="11" fill="#4a5f7c">浏览器加载（全部静态文件）</text>
+  <path d="M230,360 L324,360" stroke="#4a5f7c" stroke-width="1.6" marker-end="url(#arb)" fill="none"/>
+  <text x="277" y="352" text-anchor="middle" font-size="11" fill="#4a5f7c">每步写</text>
+  <path d="M330,395 L236,395" stroke="#4a5f7c" stroke-width="1.6" marker-end="url(#arb)" fill="none"/>
+  <text x="283" y="412" text-anchor="middle" font-size="11" fill="#4a5f7c">开页读断点</text>
+  <line x1="230" y1="392" x2="604" y2="392" stroke="#8c2f24" stroke-width="0" />
+  <path d="M230,410 L604,410" stroke="#8c2f24" stroke-width="0" fill="none"/>
+  <line x1="735" y1="300" x2="735" y2="128" stroke="#8c2f24" stroke-width="0"/>
+  <path d="M610,340 L516,340" stroke="#8c2f24" stroke-width="1.6" marker-end="url(#ar)" fill="none"/>
+  <text x="563" y="332" text-anchor="middle" font-size="11" fill="#8c2f24">托管</text>
+
+  <!-- repo note -->
+  <rect x="20" y="438" width="840" height="26" rx="4" fill="#efe8d8"/>
+  <text x="440" y="456" text-anchor="middle" font-size="12.5" fill="#5c554a">GitHub 公开仓库（必交物）：代码 + devpost/ 规划文档 + README；data/ 构建产物与音频图片 .gitignore 不入仓（防更新膨胀）</text>
+</svg>
+</div>
+
+<h2>玩家旅程 → 组件与文件</h2>
+<p class="sub">每一步旅程落到具体组件和文件（对应 spec.md > The Core Journey 与 Components）</p>
+<div class="steps-nav">
+  <button id="pv">‹ 上一步</button>
+  <div class="dots" id="dots"></div>
+  <button id="nx">下一步 ›</button>
+</div>
+<div class="card step-card" id="stepCard"></div>
+
+<h2>组件清单</h2>
+<p class="sub">每个组件对应 PRD 行为标题，5-build 按此认领</p>
+<div>
+  <details>
+    <summary>构建脚本 scripts/build.mjs<span class="prref">全部行为的素材前提</span></summary>
+    <div class="body"><ul>
+      <li>裁剪：读 <code>script.json</code>（1190 步）→ <code>data/script-slice.json</code>（seq 1–368，文本零改动，seq 368 打 <code>end:true</code>）。</li>
+      <li>资产拷贝：切片 4 背景（bg_shop_dusk / bg_shop_night / bg_store_night / bg_courtyard_night）+ 2 头像（江明/陈惠卿）+ BGM（bgm_daily / bgm_uneasy 用到，全拷）+ 切片引用的旁白；图片转 WebP。</li>
+      <li>音频盘点：生成 <code>audio-manifest.json</code>（seq→mp3）与 <code>audio-missing.json</code>（缺口+台词文本，投喂 TTS 管线）；核对旁白 <code>nar_XXXX.mp3</code> 奇数序号与 seq 的映射。</li>
+      <li>字体子集化（可选，工具不可用则回退系统宋体）。</li>
+    </ul></div>
+  </details>
+  <details>
+    <summary>轻触首屏<span class="prref">prd.md > 有声播放器 · States and Boundaries</span></summary>
+    <div class="body"><ul>
+      <li>全屏第一幕背景 + 居中"轻触 开启剧情"印——唯一点击门。</li>
+      <li>点击时 <code>AudioContext.resume()</code> / 首次 <code>play()</code> 解锁音频，随后进播放器。</li>
+    </ul></div>
+  </details>
+  <details>
+    <summary>播放器引擎 js/player.js<span class="prref">prd.md > 有声播放器</span></summary>
+    <div class="body"><ul>
+      <li>按 seq 步进的状态机：文本行 / background / music / branch 四类步分派。</li>
+      <li>打字机与配音同步开始；点击 = 未完句立即完整、已完句跳下一句；音频不打断。</li>
+      <li>BGM 循环 + music 步淡切（bgm_daily → bgm_uneasy → bgm_daily）；背景 opacity 淡入淡出。</li>
+      <li>音频缺失静默降级；每步渲染前写 localStorage。</li>
+    </ul></div>
+  </details>
+  <details>
+    <summary>选择层 js/choices.js<span class="prref">prd.md > 玩家选择</span></summary>
+    <div class="body"><ul>
+      <li>branch 步（seq 66 / 272）暂停，竖排 4 枚朱砂印章按钮：3 个剧本原文选项 + "（不答话）"。</li>
+      <li>"（不答话）" = 超时支标签，走 <code>default_goto_seq</code>（67→89 / 273→299）；无倒计时。</li>
+      <li>点选记录进摘要、写 localStorage、跳 goto_seq；选项文案照抄正本。</li>
+    </ul></div>
+  </details>
+  <details>
+    <summary>结算层 js/endscreen.js<span class="prref">prd.md > 结算页（导流）</span></summary>
+    <div class="body"><ul>
+      <li>seq 368 触发：定格压暗 → 朱砂印"待续" → 悬念文案 → "你的选择"两行摘要 → CTA"去入戏 App 看结局"（新窗口 enterdrama.cn）→ 激励视频假卡 → "重玩一次"（清进度回首屏）。</li>
+      <li><code>document.title</code> = "入戏·回山试玩｜天亮之前，他得选"（微信分享卡取标题，不接 JS-SDK）。</li>
+    </ul></div>
+  </details>
+  <details>
+    <summary>广告占位层 js/ads.js<span class="prref">prd.md > 广告占位（假素材演示）</span></summary>
+    <div class="body"><ul>
+      <li>底部 banner 常驻条：古风假广告图 + "广告"角标，结算页隐藏。</li>
+      <li>激励视频假卡：点击 → 全屏假广告图 → 3 秒倒计时 → 关闭出现 → 返回结算页。</li>
+    </ul></div>
+  </details>
+  <details>
+    <summary>进度管理 js/storage.js<span class="prref">prd.md > 进度与重玩</span></summary>
+    <div class="body"><ul>
+      <li>读写 <code>huishan_trial_v1</code>：开页有记录 → 直接跳断点并还原选择摘要；无记录 → 轻触首屏从头。</li>
+      <li>localStorage 不可用（隐私模式）：功能照常、退出即失、不报错。</li>
+    </ul></div>
+  </details>
+</div>
+
+<h2>数据模型</h2>
+<p class="sub">三份数据各住哪、怎么更新、离开再回来发生什么（对应 spec.md > Data Model）</p>
+<div class="card">
+  <p><b>① script-slice.json</b>（构建产物，浏览器只读）：seq 1–368 步数组，字段沿用正本（type / text / char_id / background / music / audio / branches / default_goto_seq）。</p>
+  <p><b>② audio-manifest.json</b>（构建产物）：seq → mp3 映射；缺失的 seq 不在映射里，播放器静默跳过。</p>
+  <p><b>③ localStorage</b>（玩家浏览器里，每步更新）：</p>
+  <pre class="json">{ "seq": 89, "choices": { "66": 2 } }</pre>
+  <p style="font-size:13.5px;color:var(--ink2)">开页读它恢复断点；"重玩一次"删它。key 挂 <code>v1</code> 后缀，改结构时换版本不冲突。</p>
+</div>
+
+<h2>文件结构</h2>
+<p class="sub">运行时 6 个 JS 文件 + 1 CSS；data/ 全部构建产物不入仓</p>
+<pre class="tree">d:\explore\
+├── index.html                <span class="c"># 单页入口：舞台/对话/选择/广告/结算五层骨架</span>
+├── css/style.css             <span class="c"># 古风拟物全部样式（宣纸/墨/朱砂/淡金 CSS 变量）</span>
+├── js/
+│   ├── main.js               <span class="c"># 启动：加载 manifest → 判断进度 → 轻触解锁 → 进引擎</span>
+│   ├── player.js             <span class="c"># 播放器引擎：步进状态机、打字机、音频/BGM/背景调度</span>
+│   ├── choices.js            <span class="c"># 选择层：branch 步选项卡组</span>
+│   ├── endscreen.js          <span class="c"># 结算层：定格、文案、摘要、CTA、重玩</span>
+│   ├── ads.js                <span class="c"># 广告占位：banner + 激励视频假卡</span>
+│   └── storage.js            <span class="c"># 进度管理：localStorage 读写/清除</span>
+├── scripts/build.mjs         <span class="c"># 构建期：裁剪/拷贝/压缩/盘点/字体子集</span>
+├── data/                     <span class="c"># 构建产物（.gitignore，不入仓）</span>
+│   ├── script-slice.json     <span class="c"># seq 1–368 切片</span>
+│   ├── audio-manifest.json   <span class="c"># seq → mp3 映射</span>
+│   ├── audio-missing.json    <span class="c"># TTS 补生成投喂清单</span>
+│   └── assets/               <span class="c"># audio/ bg/ portraits/（压缩后）</span>
+├── assets-src/fake-ads/      <span class="c"># 自制假广告图源文件（入仓，体积小）</span>
+├── devpost/                  <span class="c"># scope/prd/spec + html 伴侣（入仓）</span>
+├── .gitignore                <span class="c"># data/ 构建产物</span>
+└── README.md                 <span class="c"># 资产来源、构建命令、试玩方式（入仓）</span></pre>
+
+<h2>外部依赖与兜底</h2>
+<p class="sub">运行时零外部服务；构建期只有 Node + sharp</p>
+<table>
+  <tr><th style="width:130px">项</th><th>说明</th></tr>
+  <tr><td><b>运行时服务</b></td><td>无。不调 API，无 key、无限额、无费用。</td></tr>
+  <tr><td><b>构建期</b></td><td>Node ≥ 18；<code>sharp</code>（仅 devDependency，压缩图片）；sharp 不可用时降级直接拷原图、构建不失败。</td></tr>
+  <tr><td><b>TTS 补生成</b></td><td>入戏现成管线（本机资产）；构建期产出 <code>audio-missing.json</code> 投喂，mp3 放回后重跑构建即纳入 manifest。</td></tr>
+  <tr><td><b>托管</b></td><td>本地 <code>npx serve .</code>（试玩/录屏）；腾讯云 nginx（enterdrama.cn 子路径，可选，6-ship 定细节）。</td></tr>
+</table>
+<div class="card" style="margin-top:14px">
+  <p style="font-weight:700;color:var(--cinnabar-dk);letter-spacing:.05em;margin-bottom:6px">重要失败模式（各配一条兜底）</p>
+  <ul class="fail" style="padding-left:1.3em;font-size:14.5px">
+    <li><b>台词音频缺失/加载慢</b> → 静默降级：台词照常打字机推进，绝不阻塞白屏。</li>
+    <li><b>背景图加载失败</b> → 暗色底 + 场景名淡字占位，流程不中断。</li>
+    <li><b>localStorage 不可用</b> → 无进度照常玩，退出即失，不报错。</li>
+    <li><b>微信自动播放策略差异</b> → 轻触统一解锁 + 首句失败静默重试一次；真机实测校准。</li>
+  </ul>
+</div>
+
+<h2>决策记录</h2>
+<p class="sub">朱砂=学习者拍板，蓝=派生实现细节，金=构建期核对项</p>
+<div class="card">
+  <p><span class="who l">拍板</span><b>原生 HTML/CSS/JS + Node 构建脚本</b>——接受推荐，放弃 Vite+TS 的类型/热更新换零依赖与微信兼容确定性。</p>
+  <p><span class="who l">拍板</span><b>部署腾讯云</b>（enterdrama.cn 子路径）作 Devpost 可选 Try-it-out 链接；GitHub 公开仓库 URL 是必交物、不可用其他地址替代（已核实 skill pack 规则）。</p>
+  <p><span class="who l">拍板</span><b>资产不入仓</b>——防后续 TTS 重生成/更新膨胀（实测全量约 90MB，其实在限制内，但仓库历史干净是净收益）。</p>
+  <p><span class="who l">拍板</span><b>台词 TTS 走入戏现有管线</b>——音色与正式版一致，导流一致性最好；旁白全量现成，只补台词行。</p>
+  <p><span class="who d">派生</span>图片压 WebP、字体子集化、localStorage schema、构建脚本产出物——由以上决定导出。</p>
+  <p><span class="who q">核对</span><b>旁白 nar 奇数序号 ↔ seq 映射规则</b>——构建期盘点脚本逐条对齐正本 audio 引用与 narration/ 实际文件，manifest + 缺口报告即验证证据。</p>
+  <p><span class="who q">核对</span><b>台词行配音全量缺失</b>（学习者确认）→ TTS 管线补生成 368 步内台词；验收 = manifest 无缺口。</p>
+  <p><span class="who q">核对</span><b>微信自动播放/解锁行为差异</b>——真机实测校准轻触解锁方案（PRD Open Questions 顺延）。</p>
+</div>
+
+<footer>回山试玩版 · 4-SPEC · spec.md 为正本，本页为评审伴侣</footer>
+</div>
+
+<script>
+const steps = [
+  {t:"① 轻触首屏", tag:"轻触 开启剧情", rows:[
+    ["玩家","手机点开链接，全屏第一幕背景 + 居中朱砂印"],
+    ["组件","main.js 判断无进度 → 渲染首屏"],
+    ["关键","唯一点击门：点击即解锁音频（浏览器禁止自动出声）"],
+    ["去向","点击后 AudioContext.resume() → 进播放器"]]},
+  {t:"② 第一幕 · 照常开门", tag:"seq 1–约180 · bg_shop_dusk", rows:[
+    ["组件","player.js 步进状态机"],
+    ["表现","bgm_daily 起，旁白 nar mp3 出声，台词打字机逐字，点屏跳句"],
+    ["文件","data/script-slice.json + audio-manifest.json"]]},
+  {t:"③ 选择 ①", tag:"seq 66 · 江明的选择", rows:[
+    ["组件","choices.js 接管对话框位置"],
+    ["表现","竖排 4 枚朱砂印：3 剧本原文 + （不答话）"],
+    ["分支","选择→goto_seq（69 起）；不答话→default_goto_seq 67→89"],
+    ["记录","choices.js 写 localStorage，进结算页摘要"]]},
+  {t:"④ 钩子落下", tag:"S01 后段 · BGM 切换", rows:[
+    ["组件","player.js music 步分派"],
+    ["表现","韩策送帖/接脉消息，bgm_daily → bgm_uneasy 淡切"],
+    ["文件","data/assets/audio/bgm_uneasy.mp3"]]},
+  {t:"⑤ 第二幕 · 旧东西", tag:"seq 约181–368 · 储物间/后院", rows:[
+    ["组件","player.js"],
+    ["表现","bg_store_night → bg_courtyard_night 淡入淡出，拆青衣、试剑、涂药"]]},
+  {t:"⑥ 选择 ②", tag:"seq 272 · 江明的选择", rows:[
+    ["组件","choices.js"],
+    ["表现","同 4 选项结构；（不答话）→ 273→299"],
+    ["记录","choices 摘要第二行"]]},
+  {t:"⑦ 切断定格", tag:"seq 368 「她继续替他抹开。」", rows:[
+    ["组件","player.js 识别 end:true → 交棒 endscreen.js"],
+    ["表现","画面停住，定格背景压暗"]]},
+  {t:"⑧ 结算页（导流）", tag:"终点 · 只有两个出口", rows:[
+    ["组件","endscreen.js + ads.js"],
+    ["表现","朱砂印「待续」+ 悬念文案 + 你的选择两行摘要"],
+    ["出口 A","CTA「去入戏 App 看结局」→ 新窗口 enterdrama.cn"],
+    ["出口 B","「重玩一次」→ storage.js 清进度回首屏"],
+    ["广告","激励视频假卡：点开→3 秒倒计时→关闭→回结算页"]]}
+];
+const dotsEl=document.getElementById('dots'), cardEl=document.getElementById('stepCard');
+let cur=0;
+steps.forEach((s,i)=>{const d=document.createElement('span');d.onclick=()=>show(i);dotsEl.appendChild(d);});
+function show(i){
+  cur=(i+steps.length)%steps.length; const s=steps[cur];
+  cardEl.innerHTML=`<h3>${s.t}</h3><div class="tag">${s.tag}</div>`+
+    s.rows.map(r=>`<div class="row"><span class="k ${r[0]==='玩家'?'gold':r[0]==='去向'||r[0]==='出口 A'||r[0]==='出口 B'?'ok':r[0]==='组件'||r[0]==='文件'?'blue':''}">${r[0]}</span><span>${r[1]}</span></div>`).join('');
+  [...dotsEl.children].forEach((d,j)=>d.classList.toggle('on',j===cur));
+}
+document.getElementById('pv').onclick=()=>show(cur-1);
+document.getElementById('nx').onclick=()=>show(cur+1);
+show(0);
+</script>
+</body>
+</html>
