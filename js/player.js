@@ -34,6 +34,7 @@ export class Player {
   jump(seq) {
     const step = this.bySeq.get(seq);
     if (!step) return console.warn('jump 无此 seq:', seq);
+    this.stopVoices(); // 跳句即停上一句配音，避免混声（BGM 不受影响）
     this.current = step;
     this.render(step);
   }
@@ -123,7 +124,12 @@ export class Player {
     if (this.current.end) setTimeout(() => this.onEnd(), 1400); // 最后一句定格片刻 → 结算页
   }
 
-  // ---------- 配音（音频不打断，仅台词提前；并发上限兜底） ----------
+  // ---------- 配音（跳句停上一句防混声；并发上限兜底） ----------
+  stopVoices() {
+    for (const v of this.voices) { v.pause(); v.removeAttribute('src'); v.load(); }
+    this.voices = [];
+  }
+
   playVoice(seq) {
     const src = this.manifest[seq];
     if (!src) return; // 无配音：静默降级，绝不阻塞

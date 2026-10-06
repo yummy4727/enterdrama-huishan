@@ -67,7 +67,7 @@ Implements `prd.md > Look and Feel`，实现落点：
 
 - 输入：`script-slice.json` + `audio-manifest.json`；每步按 `type` 分派——文本行（旁白/台词）、`background`、`music`、`branch`。
 - 渲染：底部对话框（旁白无头像字体略灰 / 台词带圆框头像+角色名），打字机与配音同步开始。
-- 交互：点击 = 未完句立即完整、已完句跳下一句；音频不打断。
+- 交互：点击 = 未完句立即完整、已完句跳下一句；跳句时停掉上一句配音（防混声，学习者修订）。
 - 音频调度：台词行播对应 mp3（缺失则静默降级不阻塞）；BGM 循环播放，`music` 步触发 `bgm_daily → bgm_uneasy → bgm_daily` 淡入淡出切换；背景淡入淡出切换。
 - 每步渲染前写 localStorage（见 Data Model）。
 
