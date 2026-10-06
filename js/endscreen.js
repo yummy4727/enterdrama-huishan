@@ -1,5 +1,6 @@
 // 结算层：定格压暗、待续印、悬念文案、你的选择摘要、官网 CTA、重玩
 import { readStore, clearStore } from './storage.js';
+import { mountRewardedCard } from './ads.js';
 
 const CTA_URL = 'https://www.enterdrama.cn/';
 const SHARE_TITLE = '入戏·回山试玩｜天亮之前，他得选';
@@ -18,6 +19,7 @@ export function showEndscreen(els, sliceData) {
   els.endChoice1.textContent = summaryLine('第一幕', 66, sliceData);
   els.endChoice2.textContent = summaryLine('第二幕', 272, sliceData);
   els.endCta.href = CTA_URL;
+  mountRewardedCard(els.endAdSlot); // 激励视频广告占位卡（片 6）
   els.replay.onclick = () => {
     clearStore();
     location.href = location.pathname; // 清进度回首屏（去掉 ?seq= 调试参数）

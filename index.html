@@ -32,6 +32,12 @@
   <!-- 选择层（朱砂印章按钮） -->
   <div id="choices" class="hidden"></div>
 
+  <!-- 广告占位层：底部假 banner（片 6，自制假素材） -->
+  <div id="adBanner" class="hidden">
+    <img src="assets-src/fake-ads/banner.jpg" alt="广告">
+    <span class="ad-badge">广告</span>
+  </div>
+
   <!-- 结算层：播完 seq 368 定格后弹出（广告占位卡挂载点片 6 填充） -->
   <div id="endscreen" class="hidden">
     <div class="end-seal">待续</div>
@@ -45,6 +51,13 @@
     <a id="endCta" href="https://www.enterdrama.cn/" target="_blank" rel="noopener">去入戏 App 看结局</a>
     <div id="endAdSlot"></div>
     <button id="replay" type="button">重玩一次</button>
+  </div>
+
+  <!-- 激励视频假广告全屏层：点开 → 3 秒倒计时 → 关闭 → 回结算 -->
+  <div id="adInterstitial" class="hidden">
+    <img src="assets-src/fake-ads/rewarded.jpg" alt="广告">
+    <div id="adiCount">3</div>
+    <button id="adiClose" class="hidden" type="button" aria-label="关闭广告">✕</button>
   </div>
 </div>
 <script type="module" src="js/main.js"></script>

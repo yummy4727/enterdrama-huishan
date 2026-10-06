@@ -2,6 +2,7 @@
 import { Player } from './player.js';
 import { readStore, writeStore } from './storage.js';
 import { showEndscreen } from './endscreen.js';
+import { showBanner, hideBanner } from './ads.js';
 
 const els = {
   app: document.getElementById('app'),
@@ -20,6 +21,7 @@ const els = {
   endChoice1: document.getElementById('endChoice1'),
   endChoice2: document.getElementById('endChoice2'),
   endCta: document.getElementById('endCta'),
+  endAdSlot: document.getElementById('endAdSlot'),
   replay: document.getElementById('replay'),
 };
 Player.bindDom(els);
@@ -31,7 +33,7 @@ const [data, manifest] = await Promise.all([
 const player = new Player(data, {
   manifest,
   onStep: (step) => writeStore({ seq: step.seq }), // 每步渲染前记录进度
-  onEnd: () => showEndscreen(els, data),           // seq 368 台词播完定格 → 结算页
+  onEnd: () => { hideBanner(); showEndscreen(els, data); }, // seq 368 定格 → 藏 banner → 结算页
 });
 
 // 首屏背景先铺上
@@ -43,6 +45,7 @@ const beginFrom = (seq) => {
   if (started) return;
   started = true;
   els.tapGate.classList.add('hidden');
+  showBanner(); // 底部假广告 banner：播放全程常驻（结算页隐藏）
   // start() 链在本次点击手势内同步执行：BGM 与首句配音的首次 play() 均在手势中，完成音频解锁
   player.start(seq);
 };
@@ -52,6 +55,7 @@ const debugSeq = Number(new URLSearchParams(location.search).get('seq'));
 if (debugSeq && player.bySeq.has(debugSeq)) {
   started = true;
   els.tapGate.classList.add('hidden');
+  showBanner();
   player.start(debugSeq);
 } else {
   // 断点恢复：有存档直接从断点续播（不询问），印章文案改为「继续剧情」
