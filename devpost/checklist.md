@@ -49,7 +49,7 @@ Build mode: learn
   Learner check: 手机上玩半分钟关页重开，确认接着播。
   Commit: `localStorage断点恢复`
 
-- [ ] **5. 结算页（导流终点）**
+- [x] **5. 结算页（导流终点）**
   Becomes usable: 播完 seq 368 画面定格，弹出结算页：待续印、悬念文案、你的选择两行摘要、CTA 跳官网、重玩清进度；页面标题为分享文案。
   Why now: 导流结算页是内核的收口（"能玩的买量广告"最后一跳），核心旅程至此全程可走通。
   PRD ref: `prd.md > 结算页（导流）`

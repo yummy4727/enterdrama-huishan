@@ -1,6 +1,7 @@
 // 启动：加载数据 → 轻触首屏（解锁音频）→ 进播放器；有存档则轻触后从断点续播
 import { Player } from './player.js';
 import { readStore, writeStore } from './storage.js';
+import { showEndscreen } from './endscreen.js';
 
 const els = {
   app: document.getElementById('app'),
@@ -15,6 +16,11 @@ const els = {
   charText: document.getElementById('charText'),
   clickHint: document.getElementById('clickHint'),
   choices: document.getElementById('choices'),
+  endscreen: document.getElementById('endscreen'),
+  endChoice1: document.getElementById('endChoice1'),
+  endChoice2: document.getElementById('endChoice2'),
+  endCta: document.getElementById('endCta'),
+  replay: document.getElementById('replay'),
 };
 Player.bindDom(els);
 
@@ -25,6 +31,7 @@ const [data, manifest] = await Promise.all([
 const player = new Player(data, {
   manifest,
   onStep: (step) => writeStore({ seq: step.seq }), // 每步渲染前记录进度
+  onEnd: () => showEndscreen(els, data),           // seq 368 台词播完定格 → 结算页
 });
 
 // 首屏背景先铺上

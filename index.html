@@ -29,8 +29,23 @@
     <div class="click-hint" id="clickHint">轻触继续</div>
   </div>
 
-  <!-- 选择层（片 3 精修为朱砂印章样式） -->
+  <!-- 选择层（朱砂印章按钮） -->
   <div id="choices" class="hidden"></div>
+
+  <!-- 结算层：播完 seq 368 定格后弹出（广告占位卡挂载点片 6 填充） -->
+  <div id="endscreen" class="hidden">
+    <div class="end-seal">待续</div>
+    <div class="end-main">天亮之前，他得给个答案。</div>
+    <div class="end-sub">可这段对话，停在了药膏擦上去的那一刻。</div>
+    <div class="end-choices">
+      <div class="end-choices-title">你的选择</div>
+      <div id="endChoice1"></div>
+      <div id="endChoice2"></div>
+    </div>
+    <a id="endCta" href="https://www.enterdrama.cn/" target="_blank" rel="noopener">去入戏 App 看结局</a>
+    <div id="endAdSlot"></div>
+    <button id="replay" type="button">重玩一次</button>
+  </div>
 </div>
 <script type="module" src="js/main.js"></script>
 </body>

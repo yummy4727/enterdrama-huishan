@@ -12,7 +12,8 @@ export class Player {
     this.steps = data.steps;
     this.manifest = opts.manifest || {};
     this.bySeq = new Map(this.steps.map(s => [s.seq, s]));
-    this.onStep = opts.onStep || (() => {}); // 每步回调（片 4 存进度用）
+    this.onStep = opts.onStep || (() => {}); // 每步回调（存进度）
+    this.onEnd = opts.onEnd || (() => {});   // 切断定格步（end:true）台词播完后回调
     this.current = null;
     this.typing = false;
     this.typingDone = false;
@@ -119,6 +120,7 @@ export class Player {
     clearInterval(this.timer);
     this._target.textContent = this._fullText;
     this.typing = true; this.typingDone = true; // 点击即跳下一句
+    if (this.current.end) setTimeout(() => this.onEnd(), 1400); // 最后一句定格片刻 → 结算页
   }
 
   // ---------- 配音（音频不打断，仅台词提前；并发上限兜底） ----------
