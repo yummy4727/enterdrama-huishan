@@ -32,8 +32,8 @@ const FONT = 'SimSun, Microsoft YaHei, serif'; // SVG 属性内不能带双引�
   <rect x="30" y="52" width="96" height="96" fill="${CINNABAR}"/>
   <rect x="35" y="57" width="86" height="86" fill="none" stroke="${PAPER}" stroke-opacity=".5" stroke-width="2"/>
   <text x="78" y="112" text-anchor="middle" font-family="${FONT}" font-size="42" font-weight="bold" fill="${PAPER}">入戏</text>
-  <!-- 中：主文案 -->
-  <text x="160" y="98" font-family="${FONT}" font-size="46" font-weight="bold" fill="${PAPER}">和 TA 演一段修仙情</text>
+  <!-- 中：主文案（品牌句） -->
+  <text x="160" y="98" font-family="${FONT}" font-size="46" font-weight="bold" fill="${PAPER}">入一场戏，等一个你。</text>
   <text x="162" y="148" font-family="${FONT}" font-size="28" fill="${GOLD}">双人对局 · 百种剧本 · 声临其境</text>
   <!-- 右：CTA 按钮 -->
   <rect x="830" y="66" width="212" height="68" rx="6" fill="${CINNABAR}"/>
@@ -63,8 +63,8 @@ const FONT = 'SimSun, Microsoft YaHei, serif'; // SVG 属性内不能带双引�
       <stop offset=".62" stop-color="${INK}.12)"/><stop offset="1" stop-color="${INK}.88)"/>
     </linearGradient>
   </defs>
-  <!-- 顶部：广告标识行 -->
-  <text x="540" y="112" text-anchor="middle" font-family="${FONT}" font-size="34" letter-spacing="10" fill="${GOLD}">— 入戏 App · 推广 —</text>
+  <!-- 顶部：广告标识行（品牌句） -->
+  <text x="540" y="112" text-anchor="middle" font-family="${FONT}" font-size="34" letter-spacing="8" fill="${GOLD}">— 入戏 App · 入一场戏，等一个你。—</text>
   <!-- 主标题区 -->
   <text x="540" y="238" text-anchor="middle" font-family="${FONT}" font-size="78" font-weight="bold" fill="${PAPER}">回 山</text>
   <text x="540" y="310" text-anchor="middle" font-family="${FONT}" font-size="36" letter-spacing="6" fill="${GOLD}">完整版已上线</text>
