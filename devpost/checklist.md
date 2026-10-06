@@ -90,15 +90,15 @@ Build mode: learn
 
 ## Code Tour and App Map
 
-- [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
-- [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
-- [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
+- [x] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
+- [x] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
+- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence: [what actually happened; real document/test/code references; unfinished work if interrupted]
-Route and stops: [actual paths and symbols; guided stops completed, or reference-only route]
-Edit outcome: [tried/kept/reverted/declined/not applicable; verification if changed]
-Reflection: [offered/answered/declined/already covered — personal answer belongs only in the ignored profile]
-Activity mode: [live app and editor, explicit static fallback, focused alternative, prior practice, or recap]
+Activity and evidence: 6-ship 会话中补做。全部运行时文件（main/player/choices/endscreen/ads/storage/build.mjs、index.html、script-slice.json）本会话实读后生成导览图；配合同场技术审查（构建 368 步/配音 353/353、浏览器自动化全流程 PASS、console 零 JS 报错）作为代码即成品的一致性证据。
+Route and stops: 六站静态导览（build.mjs → data 两份 JSON → main.js → player.js → choices+endscreen → storage+ads），每站给出具体符号落点（SLICE_END/STAGE、beginFrom、jump/advance/AUTO 分支、default_goto_seq、huishan_trial_v1）。
+Edit outcome: not applicable — 未提出代码修改，仅生成导览产物。
+Reflection: 已通过导览图「值得带走复用的实践」表提供 5 条可迁移实践（手势内解锁音频、暂存原子换入、缺口清单驱动、静默降级、?seq 调试跳转）；个人化反思归 learner-profile（gitignore，不入仓）。
+Activity mode: focused alternative — 成品代码静态导览（构建已完成，不再动编辑器）。
 
 ## Revisions
 
