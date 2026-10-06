@@ -9,7 +9,7 @@ Build mode: learn
 
 ## Slices
 
-- [ ] **1. 构建脚本 + 可点击读的试玩骨架**
+- [x] **1. 构建脚本 + 可点击读的试玩骨架**
   Becomes usable: 打开页面轻触后，能逐句点击读第一幕：背景图、对话框、打字机、场景切换全部就位（暂无声）。
   Why now: 一次性打通最大风险——正本 1190 步裁剪、旁白奇数序号映射、资产压缩、播放器读数全链路；坏消息最早出现。
   PRD ref: `prd.md > The Core Journey` (steps 1–3)、`prd.md > Screens and Layout`

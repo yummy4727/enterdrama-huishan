@@ -1,16 +1,23 @@
 // 播放器引擎：按 seq 步进，分派 background / music / narration / line / prompt / branch
-const TYPE_SPEED = 40; // 打字机 ms/字
+const TYPE_SPEED = 40;   // 打字机 ms/字
+const VOICE_MAX = 4;     // 并发配音上限（点击过快时停最旧，正常节奏不触发）
+const BGM_VOL = 0.55;    // BGM 目标音量
+const FADE_MS = 900;     // BGM 淡切时长
 
 export class Player {
   constructor(data, opts = {}) {
     this.meta = data.meta;
     this.steps = data.steps;
+    this.manifest = opts.manifest || {};
     this.bySeq = new Map(this.steps.map(s => [s.seq, s]));
     this.onStep = opts.onStep || (() => {}); // 每步回调（片 4 存进度用）
     this.current = null;
     this.typing = false;
     this.typingDone = false;
     this.timer = null;
+    this.voices = [];   // 在播配音池
+    this.bgm = null;    // 当前 BGM Audio
+    this.bgmKey = null;
   }
 
   // ---------- DOM ----------
@@ -42,7 +49,7 @@ export class Player {
     const el = Player.els;
     switch (step.type) {
       case 'background': this.setBackground(step.image_key); this.nextAuto(); break;
-      case 'music': this.nextAuto(); break;        // BGM 调度片 2 接入
+      case 'music': this.setMusic(step.song_key); this.nextAuto(); break;
       case 'narration': this.showDialog(step, false); break;
       case 'line':
       case 'prompt': this.showDialog(step, true); break;
@@ -75,6 +82,7 @@ export class Player {
 
   // ---------- 对话 ----------
   showDialog(step, withChar) {
+    this.playVoice(step.seq); // 打字机与配音同步开始；缺失静默跳过
     const el = Player.els;
     el.dialog.classList.remove('hidden');
     el.dialog.classList.toggle('narration', !withChar);
@@ -128,5 +136,54 @@ export class Player {
   pickChoice(opt) {
     Player.els.choices.classList.add('hidden');
     this.jump(opt.goto);
+  }
+
+  // ---------- 配音（音频不打断，仅台词提前；并发上限兜底） ----------
+  playVoice(seq) {
+    const src = this.manifest[seq];
+    if (!src) return; // 无配音：静默降级，绝不阻塞
+    const audio = new Audio(src);
+    this.voices.push(audio);
+    audio.addEventListener('ended', () => {
+      this.voices = this.voices.filter(v => v !== audio);
+    });
+    // 超过并发上限：停最旧（仅在快速连点时发生）
+    while (this.voices.length > VOICE_MAX) {
+      const old = this.voices.shift();
+      old.pause();
+      old.removeAttribute('src'); old.load();
+    }
+    audio.play().catch(() => {
+      // 首句播放失败静默重试一次（微信自动播放策略差异），仍失败则放弃
+      setTimeout(() => audio.play().catch(() => {}), 300);
+    });
+  }
+
+  // ---------- BGM：循环播放，music 步淡切 ----------
+  setMusic(key) {
+    if (key === this.bgmKey && this.bgm) return;
+    this.bgmKey = key;
+    const src = this.meta.music[key];
+    if (!src) return;
+    const old = this.bgm;
+    const next = new Audio(src);
+    next.loop = true;
+    next.volume = 0;
+    this.bgm = next;
+    let ticks = 0;
+    const fade = setInterval(() => {
+      if (++ticks > 60) { clearInterval(fade); return; } // 兜底：约 5s 后不再空转
+      // 淡出旧曲
+      if (old && !old.paused) {
+        old.volume = Math.max(0, old.volume - 0.05);
+        if (old.volume <= 0) { old.pause(); old.removeAttribute('src'); old.load(); }
+      }
+      // 淡入新曲
+      if (!next.paused) {
+        next.volume = Math.min(BGM_VOL, next.volume + 0.05);
+        if (next.volume >= BGM_VOL) clearInterval(fade);
+      }
+    }, FADE_MS * 0.05 / BGM_VOL);
+    next.play().catch(() => setTimeout(() => next.play().catch(() => {}), 300));
   }
 }

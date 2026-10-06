@@ -1,4 +1,4 @@
-// 启动：加载数据 → 轻触首屏 → 进播放器（音频解锁片 2 接入）
+// 启动：加载数据 → 轻触首屏（解锁音频）→ 进播放器
 import { Player } from './player.js';
 
 const els = {
@@ -17,8 +17,11 @@ const els = {
 };
 Player.bindDom(els);
 
-const data = await (await fetch('data/script-slice.json')).json();
-const player = new Player(data);
+const [data, manifest] = await Promise.all([
+  fetch('data/script-slice.json').then(r => r.json()),
+  fetch('data/audio-manifest.json').then(r => r.json()),
+]);
+const player = new Player(data, { manifest });
 
 // 首屏背景先铺上
 els.bgA.src = data.meta.default_background;
@@ -29,7 +32,7 @@ els.tapGate.addEventListener('click', () => {
   if (started) return;
   started = true;
   els.tapGate.classList.add('hidden');
-  // 片 2：在此解锁音频（AudioContext.resume）
+  // start() 链在本次点击手势内同步执行：BGM 与首句配音的首次 play() 均在手势中，完成音频解锁
   player.start();
 });
 
