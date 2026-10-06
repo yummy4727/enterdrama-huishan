@@ -10,6 +10,10 @@
 /data/
 node_modules/
 
+# Demo video & recording takes (live on Devpost, not in repo)
+demo-huishan.mp4
+rec-seg*.mp4
+
 # Avatar iteration candidates & reference photos (not for public repo); keep finals only
 assets-src/portraits/*
 !assets-src/portraits/江明.png

@@ -81,12 +81,15 @@ Build mode: learn
 
 ## Hands-on Checkpoints
 
-- [ ] 早期反馈（片 3 后）：核心循环（读→选→分支）首次完整，学习者试玩并给方向性反馈
-- [ ] 最终踢胎（片 7 后）：学习者自由探索完整核心旅程并汇总反馈
+- [x] 早期反馈（片 3 后）：核心循环（读→选→分支）首次完整，学习者试玩并给方向性反馈
+  证据：片 3 后学习者实玩并多轮反馈（头像观感改清纯风、回首页续播头像丢失 bug、假广告观感），驱动 dc5b728、e0ac4d3 等修复提交。
+- [x] 最终踢胎（片 7 后）：学习者自由探索完整核心旅程并汇总反馈
+  证据：学习者手机实走完整旅程（门→选择→分支→结算→CTA）并录制演示视频，过程中发现并解决无声、头像裂图、假广告 404 等问题；2026-10-07 重录版 2:22 全流程通过。
 
 ## Final Review
 
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Final review complete — feedback resolved and learner confirms ready to ship
+  证据：技术审查通过（构建 368 步、配音 353/353、浏览器自动化全流程 PASS、console 零 JS 报错），修复已提交（dc5b728 头像裂图自愈+README、e0ac4d3 说话人显示）；学习者更新项目后要求重录演示视频，确认可发布。
 
 ## Code Tour and App Map
 

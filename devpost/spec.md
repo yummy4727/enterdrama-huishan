@@ -177,4 +177,4 @@ d:\explore\
 
 - **公开仓库**：https://github.com/yummy4727/enterdrama-huishan （2026-10-06 创建，master 分支，无认证可访问已验证）
 - **线上试玩（Devpost Try-it-out 位）**：https://enterdrama.cn/trial/
-- **演示视频**：（待录制后回填 URL）
+- **演示视频**：已录制 `demo-huishan.mp4`（2:22，720×1640 竖屏，真机内录配音/BGM；含轻触出声、两个选择点真分岔、结算页、激励视频假卡全流程、CTA 跳官网）。Devpost 上传后回填 URL。
