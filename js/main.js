@@ -1,5 +1,6 @@
-// 启动：加载数据 → 轻触首屏（解锁音频）→ 进播放器
+// 启动：加载数据 → 轻触首屏（解锁音频）→ 进播放器；有存档则轻触后从断点续播
 import { Player } from './player.js';
+import { readStore, writeStore } from './storage.js';
 
 const els = {
   app: document.getElementById('app'),
@@ -21,13 +22,23 @@ const [data, manifest] = await Promise.all([
   fetch('data/script-slice.json').then(r => r.json()),
   fetch('data/audio-manifest.json').then(r => r.json()),
 ]);
-const player = new Player(data, { manifest });
+const player = new Player(data, {
+  manifest,
+  onStep: (step) => writeStore({ seq: step.seq }), // 每步渲染前记录进度
+});
 
 // 首屏背景先铺上
 els.bgA.src = data.meta.default_background;
 els.bgA.onload = () => els.bgA.classList.add('show');
 
 let started = false;
+const beginFrom = (seq) => {
+  if (started) return;
+  started = true;
+  els.tapGate.classList.add('hidden');
+  // start() 链在本次点击手势内同步执行：BGM 与首句配音的首次 play() 均在手势中，完成音频解锁
+  player.start(seq);
+};
 
 // ?seq=N 调试跳转（仅验收用）：跳过轻触直接落到指定步（无声）
 const debugSeq = Number(new URLSearchParams(location.search).get('seq'));
@@ -36,13 +47,14 @@ if (debugSeq && player.bySeq.has(debugSeq)) {
   els.tapGate.classList.add('hidden');
   player.start(debugSeq);
 } else {
-  els.tapGate.addEventListener('click', () => {
-    if (started) return;
-    started = true;
-    els.tapGate.classList.add('hidden');
-    // start() 链在本次点击手势内同步执行：BGM 与首句配音的首次 play() 均在手势中，完成音频解锁
-    player.start();
-  });
+  // 断点恢复：有存档直接从断点续播（不询问），印章文案改为「继续剧情」
+  const saved = readStore();
+  if (saved.seq && player.bySeq.has(saved.seq)) {
+    document.querySelector('.tap-seal span:last-child').textContent = '继续剧情';
+    els.tapGate.addEventListener('click', () => beginFrom(saved.seq));
+  } else {
+    els.tapGate.addEventListener('click', () => beginFrom());
+  }
 }
 
 // 全局点击 = 补全当前句 / 跳下一句（选择按钮自带 stopPropagation）

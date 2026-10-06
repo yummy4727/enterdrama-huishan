@@ -19,7 +19,7 @@ Build mode: learn
   Learner check: 打开页面轻触进入，点读十几句，看对话框/打字机/背景切换的手感对不对。
   Commit: `构建脚本与文字版试玩骨架`
 
-- [ ] **2. 有声：旁白配音与 BGM（kernel：第一秒出声）**
+- [x] **2. 有声：旁白配音与 BGM（kernel：第一秒出声）**
   Becomes usable: 轻触后第一句旁白配音出声，BGM 起且在 music 步淡切（bgm_daily → bgm_uneasy），台词打字机与配音同步。
   Why now: "点开第一秒就是出声的剧情"是 scope 承诺的核心拍点，紧贴数据链路接入。
   PRD ref: `prd.md > 有声播放器`
@@ -29,7 +29,7 @@ Build mode: learn
   Learner check: 手机浏览器打开，听第一句是否 3 秒内出声、BGM 是否在钩子处变调。
   Commit: `接入旁白配音与BGM调度`
 
-- [ ] **3. 选择点与真实分支（含"不答话"）**
+- [x] **3. 选择点与真实分支（含"不答话"）**
   Becomes usable: 走到 seq 66/272 弹出 4 枚朱砂印选项，选完播对应分支、汇合继续；选 A 与选 B 后续台词确实不同。
   Why now: "按下去剧情真的不一样"是内核第二拍；此片完成后核心循环（读→选→变）首次完整可玩，是早期反馈检查点。
   PRD ref: `prd.md > 玩家选择`
@@ -39,7 +39,7 @@ Build mode: learn
   Learner check: 实走一次选择，感受分支变化与按钮手感。
   Commit: `选择点与分支推进`
 
-- [ ] **4. 断点恢复**
+- [x] **4. 断点恢复**
   Becomes usable: 播到任一处关页重开，直接从断点台词继续，已做选择不丢；清进度后从头开始。
   Why now: 存储读写已在片 1–3 就位，此片只补"回来"的路径，风险最低时验证 PRD 状态行为。
   PRD ref: `prd.md > 进度与重玩`、`prd.md > States and Boundaries`（断点恢复）
